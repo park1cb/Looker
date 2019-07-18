@@ -99,6 +99,12 @@ view: paid_users {
     sql: ${original_price} ;;
     value_format_name: usd
   }
+  dimension_group: cohort {
+    type: duration
+    intervals: [day]
+    sql_start: ${joined_at_raw} ;;
+    sql_end: ${purchased_at_raw} ;;
+  }
 
 
   set: detail {
