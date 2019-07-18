@@ -10,7 +10,7 @@ datagroup: live_ops_default_datagroup {
 
 persist_with: live_ops_default_datagroup
 
-# - explore: __test_onboarding
+explore: paid_users {}
 
 # - explore: adjust_kpi
 
