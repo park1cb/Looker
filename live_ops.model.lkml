@@ -12,7 +12,15 @@ persist_with: live_ops_default_datagroup
 
 explore: paid_users {}
 
-# - explore: adjust_kpi
+explore: active_users {
+  label: "ARPU/ARPPU"
+  join: paid_users {
+    type: inner
+    sql_on: ${paid_users.joined_at_date}=${active_users.joined_at_date} ;;
+    relationship: one_to_one
+  }
+}
+
 
 # - explore: amplitude_mapped_from_adjust
 
