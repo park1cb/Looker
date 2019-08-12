@@ -15,12 +15,14 @@ explore: paid_users {}
 explore: active_users {
   label: "ARPU/ARPPU"
   join: paid_users {
-    type: inner
-    sql_on: ${paid_users.joined_at_date}=${active_users.joined_at_date} ;;
-    relationship: one_to_one
+    type: left_outer
+    sql_on: ${paid_users.user_id}=${active_users.id}
+    and ${paid_users.purchased_at_date}=${active_users.base_date};;
+    relationship: many_to_one
   }
 }
 
+explore: Paying_Conversion {}
 
 # - explore: amplitude_mapped_from_adjust
 

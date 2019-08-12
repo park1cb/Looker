@@ -6,7 +6,7 @@ view: active_users {
 
             join mysql.gatsby.users users
             on users.id=amp.user_id
-            --where base_date>=date '2019-01-01'
+            where base_date>=date '2019-07-01'
              ;;
   }
 
@@ -56,8 +56,20 @@ view: active_users {
     sql: ${TABLE}.event_time ;;
   }
 
-  dimension: base_date {
-    type: date
+  dimension_group: base {
+    type: time
+    timeframes: [
+      raw,
+      date,
+      week,
+      month,
+      quarter,
+      year,
+      hour_of_day,
+      day_of_week
+    ]
+    convert_tz: no
+    datatype: date
     sql: ${TABLE}.base_date ;;
   }
 
