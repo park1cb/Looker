@@ -1,6 +1,6 @@
 view: active_users {
   derived_table: {
-    sql: select users.id,users.joined_at,amp.event_type,amp.event_time,amp.base_date
+    sql: select users.id,users.joined_at,amp.event_type,amp.event_time,amp.base_date,base_dt
 
             from hive.dw.dw_amplitude amp
 
@@ -34,6 +34,23 @@ view: active_users {
     sql: ${TABLE}.joined_at ;;
   }
 
+  dimension_group: base_dt {
+    type: time
+    timeframes: [
+      raw,
+      date,
+      week,
+      month,
+      quarter,
+      year,
+      hour_of_day,
+      day_of_week
+    ]
+    convert_tz: no
+    datatype: timestamp
+    sql: ${TABLE}.base_dt ;;
+  }
+
   dimension: event_type {
     type: string
     sql: ${TABLE}.event_type ;;
@@ -56,20 +73,8 @@ view: active_users {
     sql: ${TABLE}.event_time ;;
   }
 
-  dimension_group: base {
-    type: time
-    timeframes: [
-      raw,
-      date,
-      week,
-      month,
-      quarter,
-      year,
-      hour_of_day,
-      day_of_week
-    ]
-    convert_tz: no
-    datatype: date
+  dimension: base_date {
+    type: date
     sql: ${TABLE}.base_date ;;
   }
 

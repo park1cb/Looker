@@ -20,10 +20,7 @@ view: paid_users {
 
   suggestions: no
 
-  measure: count {
-    type: count
-    drill_fields: [detail*]
-  }
+
 
   dimension: user_id {
     type: number
@@ -94,6 +91,8 @@ view: paid_users {
     sql: ${original_price} ;;
     value_format_name: usd
   }
+
+
   measure: Average_Price{
     type: average
     sql: ${original_price} ;;
@@ -107,15 +106,4 @@ view: paid_users {
   }
 
 
-  set: detail {
-    fields: [
-      user_id,
-      joined_at_date,
-      purchased_at_date,
-      product,
-      amount,
-      type,
-      original_price
-    ]
-  }
 }
