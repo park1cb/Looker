@@ -120,158 +120,239 @@ view: ltv_final {
   dimension: running_month8_prev_day {
     type: number
     sql: ${TABLE}.RunningMonth8_prev_day ;;
+    hidden: yes
   }
 
   dimension: running_month7 {
     type: number
     sql: ${TABLE}.RunningMonth7 ;;
+    hidden: yes
   }
 
   dimension: running_month7_prev_day {
     type: number
     sql: ${TABLE}.RunningMonth7_prev_day ;;
+    hidden: yes
   }
 
   dimension: running_month6 {
     type: number
     sql: ${TABLE}.RunningMonth6 ;;
+    hidden: yes
   }
 
   dimension: running_month6_prev_day {
     type: number
     sql: ${TABLE}.RunningMonth6_prev_day ;;
+    hidden: yes
   }
 
   dimension: running_month5 {
     type: number
     sql: ${TABLE}.RunningMonth5 ;;
+    hidden: yes
   }
 
   dimension: running_month5_prev_day {
     type: number
     sql: ${TABLE}.RunningMonth5_prev_day ;;
+    hidden: yes
   }
 
   dimension: running_month4 {
     type: number
     sql: ${TABLE}.RunningMonth4 ;;
+    hidden: yes
   }
 
   dimension: running_month4_prev_day {
     type: number
     sql: ${TABLE}.RunningMonth4_prev_day ;;
+    hidden: yes
   }
 
   dimension: running_month3 {
     type: number
     sql: ${TABLE}.RunningMonth3 ;;
+    hidden: yes
   }
 
   dimension: running_month3_prev_day {
     type: number
     sql: ${TABLE}.RunningMonth3_prev_day ;;
+    hidden: yes
   }
 
   dimension: running_month2 {
     type: number
     sql: ${TABLE}.RunningMonth2 ;;
+    hidden: yes
   }
 
   dimension: running_month2_prev_day {
     type: number
     sql: ${TABLE}.RunningMonth2_prev_day ;;
+    hidden: yes
   }
 
   dimension: running_month1 {
     type: number
     sql: ${TABLE}.RunningMonth1 ;;
+    hidden: yes
   }
 
   dimension: running_month1_prev_day {
     type: number
     sql: ${TABLE}.RunningMonth1_prev_day ;;
+    hidden: yes
   }
 
   dimension: running_month0 {
     type: number
     sql: ${TABLE}.RunningMonth0 ;;
+    hidden: yes
   }
 
   dimension: running_month0_prev_day {
     type: number
     sql: ${TABLE}.RunningMonth0_prev_day ;;
+    hidden: yes
   }
 
   dimension: running_month8_formatted {
     type: number
-    label: "Month 8"
     sql: case when ${running_month8} = ${running_month8_prev_day} then null
       else ${running_month8} end ;;
     value_format_name: usd
+    hidden: yes
   }
 
   dimension: running_month7_formatted {
     type: number
-    label: "Month 7"
     sql: case when ${running_month7} = ${running_month7_prev_day} then null
       else ${running_month7} end ;;
     value_format_name: usd
+    hidden: yes
   }
 
   dimension: running_month6_formatted {
     type: number
-    label: "Month 6"
     sql: case when ${running_month6} = ${running_month6_prev_day} then null
       else ${running_month6} end ;;
     value_format_name: usd
+    hidden: yes
   }
 
   dimension: running_month5_formatted {
     type: number
-    label: "Month 5"
     sql: case when ${running_month5} = ${running_month5_prev_day} then null
       else ${running_month5} end ;;
     value_format_name: usd
+    hidden: yes
   }
 
   dimension: running_month4_formatted {
     type: number
-    label: "Month 4"
     sql: case when ${running_month4} = ${running_month4_prev_day} then null
       else ${running_month4} end ;;
     value_format_name: usd
+    hidden: yes
   }
 
   dimension: running_month3_formatted {
     type: number
-    label: "Month 3"
     sql: case when ${running_month3} = ${running_month3_prev_day} then null
       else ${running_month3} end ;;
     value_format_name: usd
+    hidden: yes
   }
 
   dimension: running_month2_formatted {
     type: number
-    label: "Month 2"
     sql: case when ${running_month2} = ${running_month2_prev_day} then null
       else ${running_month2} end ;;
     value_format_name: usd
+    hidden: yes
   }
 
   dimension: running_month1_formatted {
     type: number
-    label: "Month 1"
     sql: case when ${running_month1} = ${running_month1_prev_day} then null
       else ${running_month1} end ;;
     value_format_name: usd
+    hidden: yes
   }
 
   dimension: running_month0_formatted {
     type: number
-    label: "Month 0"
     sql: case when ${running_month0} = ${running_month0_prev_day} then null
       else ${running_month0} end ;;
     value_format_name: usd
+    hidden: yes
+  }
+
+  measure: Month0 {
+    type: average
+    label: "Month 0"
+    sql: ${running_month0_formatted} ;;
+    value_format: "$#0.####"
+  }
+
+  measure: Month1 {
+    type: average
+    label: "Month 1"
+    sql: ${running_month1_formatted} ;;
+    value_format: "$#0.####"
+  }
+
+
+  measure: Month2 {
+    type: average
+    label: "Month 2"
+    sql: ${running_month2_formatted} ;;
+    value_format: "$#0.####"
+  }
+
+  measure: Month3 {
+    type: average
+    label: "Month 3"
+    sql: ${running_month3_formatted} ;;
+    value_format: "$#0.####"
+  }
+
+  measure: Month4 {
+    type: average
+    label: "Month 4"
+    sql: ${running_month4_formatted} ;;
+    value_format: "$#0.####"
+  }
+
+  measure: Month5 {
+    type: average
+    label: "Month 5"
+    sql: ${running_month5_formatted} ;;
+    value_format: "$#0.####"
+  }
+
+  measure: Month6 {
+    type: average
+    label: "Month 6"
+    sql: ${running_month6_formatted} ;;
+    value_format: "$#0.####"
+  }
+
+  measure: Month7 {
+    type: average
+    label: "Month 7"
+    sql: ${running_month7_formatted} ;;
+    value_format: "$#0.####"
+  }
+
+  measure: Month8 {
+    type: average
+    label: "Month 8"
+    sql: ${running_month8_formatted} ;;
+    value_format: "$#0.####"
   }
 
   set: detail {
