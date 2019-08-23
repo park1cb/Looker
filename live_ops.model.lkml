@@ -45,3 +45,5 @@ explore: top_story_raking_by_sales_product {}
 explore: monthly_subscriber_spikes {}
 
 explore: ltv_final {}
+
+explore: ltv_table_week {}
