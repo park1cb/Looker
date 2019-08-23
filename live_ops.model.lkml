@@ -25,3 +25,23 @@ explore: active_users {
 explore: Paying_Conversion {}
 
 explore: subscription_usage_distribution {}
+
+explore: subscriptions_by_count {}
+
+explore: monthly_subscription {}
+
+explore: HRA_Usage {}
+
+explore: HRA_Daily_Follower_Usage {}
+
+explore: subscription_breakdown {}
+
+explore: hra_heavy_user_monthly_subscription_raking {}
+
+explore: subscriber_average_story_reads {}
+
+explore: top_story_raking_by_sales_product {}
+
+explore: monthly_subscriber_spikes {}
+
+explore: ltv_final {}

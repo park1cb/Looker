@@ -6,7 +6,9 @@ view: active_users {
 
             join mysql.gatsby.users users
             on users.id=amp.user_id
-            where base_date>=date '2019-07-01'
+
+            where base_date>= date '2019-07-01'
+
              ;;
   }
 
@@ -47,7 +49,7 @@ view: active_users {
       day_of_week
     ]
     convert_tz: no
-    datatype: timestamp
+    datatype: date
     sql: ${TABLE}.base_dt ;;
   }
 

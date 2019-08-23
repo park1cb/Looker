@@ -1,16 +1,22 @@
-view: subscription_usage_distribution {
+view: monthly_subscription {
   derived_table: {
-    sql: select created_at , user_id,init_amount-current_amount as usage,rank() over (partition by user_id order by created_at) as row_num
+    sql: with mast as
+(
+select created_at , user_id,init_amount-current_amount as usage,rank() over (partition by user_id order by created_at) as row_num
       from mysql.gatsby.coin_balances
       where init_amount=200
       --and is_active=0
       and expired_at is not null
       and type='subscription'
-
+)
+select created_at,user_id,usage,row_num,max(row_num) over (partition by user_id) as maximum,avg(usage) over (partition by user_id) as avg_usage
+from mast
+group by 1,2,3,4
        ;;
   }
 
   suggestions: no
+
 
   dimension_group: created_at {
     type: time
@@ -27,7 +33,6 @@ view: subscription_usage_distribution {
     datatype: date
     sql: ${TABLE}.created_at ;;
   }
-
   dimension: user_id {
     type: number
     sql: ${TABLE}.user_id ;;
@@ -55,55 +60,24 @@ view: subscription_usage_distribution {
     sql: ${TABLE}.row_num ;;
   }
 
+  dimension: maximum {
+    type: number
+    sql: ${TABLE}.maximum ;;
+  }
+
+  dimension: avge_usage {
+    type: number
+    sql: ${TABLE}.avg_usage ;;
+  }
+
   measure: count_dist {
     type: count_distinct
     sql: ${user_id} ;;
   }
 
-}
-
-# If necessary, uncomment the line below to include explore_source.
-# include: "live_ops.model.lkml"
-
-view: subscriptions_by_count {
-  derived_table: {
-    explore_source: subscription_usage_distribution {
-      column: created_at_month {}
-      column: row_num {}
-      column: usage {}
-      column: usage_group {}
-      column: user_id {}
-    }
-  }
-  dimension: created_at_month {
-    type: date_month
-  }
-  dimension: row_num {
-    type: number
-  }
-  dimension: usage {
-    type: number
-  }
-  dimension: usage_group {
-    type: number
-  }
-  dimension: user_id {
-    type: number
-  }
-
-  measure: Avg_Renewal {
+  measure: avg_renewal {
     type: average
-    sql: ${row_num} ;;
-    value_format_name: decimal_2
+    sql: ${maximum} ;;
   }
 
-  measure: max_row {
-    type: max
-    sql: ${row_num} ;;
-  }
-
-  measure: count_dist {
-    type: count_distinct
-    sql: ${user_id} ;;
-  }
 }
