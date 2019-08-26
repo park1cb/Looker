@@ -47,3 +47,11 @@ explore: monthly_subscriber_spikes {}
 explore: ltv_final {}
 
 explore: ltv_table_week {}
+
+explore: first_story_read_within_24_hours {
+  join: new_users {
+    type: inner
+    sql_on: ${new_users.joined_at_date}=${first_story_read_within_24_hours.joined_at_date} ;;
+    relationship: one_to_one
+  }
+}
