@@ -9,8 +9,7 @@ view: first_story_read_within_24_hours {
       join mart.mart.kpi_by_day kpi
       on kpi.base_date_est=cast(users.joined_at at time zone '-05:00' as date)
       where joined_at at time zone '-05:00'<=date_add('hour',-48,now())
-      group by 1,2
-      having  date_diff('hour',users.joined_at,min(epi.created_at))<=24
+      and date_diff('hour',users.joined_at,epi.created_at)<=24
        ;;
   }
 
