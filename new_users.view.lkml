@@ -2,7 +2,6 @@ view: new_users {
   derived_table: {
     sql: select id,joined_at
       from mysql.gatsby.users users
-      where joined_at at time zone '-05:00'<=date_add('hour',-24,now())
        ;;
   }
 
