@@ -10,15 +10,7 @@ datagroup: live_ops_default_datagroup {
 
 persist_with: live_ops_default_datagroup
 
-explore: active_users {
-  label: "ARPU/ARPPU"
-  join: paid_users {
-    type: inner
-    sql_on: ${paid_users.purchased_at_date}=${active_users.base_dt_date};;
-    relationship: one_to_one
-  }
 
-}
 
 explore: Paying_Conversion {}
 
@@ -67,6 +59,15 @@ explore: paid_users {
   join: new_users {
     type: inner
     sql_on: ${new_users.joined_at_date}=${paid_users.joined_at_date} ;;
+    relationship: one_to_one
+  }
+}
+
+explore: active_users {
+  label: "Active Users"
+  join: new_users {
+    type: inner
+    sql_on: ${new_users.joined_at_date}=${active_users.joined_at_date} ;;
     relationship: one_to_one
   }
 }
