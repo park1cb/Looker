@@ -10,8 +10,6 @@ datagroup: live_ops_default_datagroup {
 
 persist_with: live_ops_default_datagroup
 
-explore: paid_users {}
-
 explore: active_users {
   label: "ARPU/ARPPU"
   join: paid_users {
@@ -52,6 +50,23 @@ explore: first_story_read_within_24_hours {
   join: new_users {
     type: inner
     sql_on: ${new_users.joined_at_date}=${first_story_read_within_24_hours.joined_at_date} ;;
+    relationship: one_to_one
+  }
+}
+explore: actual_reading_rate_in_96_hours {
+  join: new_users {
+    type: inner
+    sql_on: ${new_users.joined_at_date}=${actual_reading_rate_in_96_hours.joined_at_date} ;;
+    relationship: one_to_one
+  }
+}
+
+
+explore: paid_users {
+  label: "conversion to payer"
+  join: new_users {
+    type: inner
+    sql_on: ${new_users.joined_at_date}=${paid_users.joined_at_date} ;;
     relationship: one_to_one
   }
 }

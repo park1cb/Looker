@@ -39,7 +39,7 @@ view: paid_users {
       hour_of_day,
       day_of_week
     ]
-    convert_tz: no
+    convert_tz: yes
     datatype: date
     sql: ${TABLE}.joined_at ;;
   }
@@ -56,7 +56,7 @@ view: paid_users {
       hour_of_day,
       day_of_week
     ]
-    convert_tz: no
+    convert_tz: yes
     datatype: date
     sql: ${TABLE}.Purchased_at ;;
   }

@@ -1,7 +1,10 @@
 view: new_users {
   derived_table: {
-    sql: select id,joined_at
+    sql: select users.id,joined_at
       from mysql.gatsby.users users
+      left join mysql.gatsby.pre_signin_users pre
+        on users.id = pre.pre_user_id
+      where pre.pre_user_id is null
        ;;
   }
 
