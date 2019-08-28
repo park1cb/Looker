@@ -7,7 +7,7 @@ view: active_users {
             join mysql.gatsby.users users
             on users.id=amp.user_id
 
-            where base_date>= date '2019-03-01'
+            where base_date>= date '2019-05-15'
 
              ;;
   }
