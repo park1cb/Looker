@@ -8,7 +8,9 @@ view: HRA_Usage {
       ,cu.amount
       from mysql.gatsby.coin_usages cu
       left join mysql.gatsby.coin_balances cb on cu.coin_balance_id = cb.id
-      where story_id = 7808
+      join mysql.gatsby.stories story
+      on cu.story_id=story.id
+      where writer_string_id = 'RadishOriginals'
 
 
        ;;
