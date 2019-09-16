@@ -102,4 +102,14 @@ view: early_funnel {
     sql: ${amplitude_id} ;;
   }
 
+  measure: Payment {
+    label: "Payment"
+    type: count_distinct
+    filters: {
+      field: event
+      value: "Purchase Coins"
+    }
+    sql: ${amplitude_id} ;;
+  }
+
 }
