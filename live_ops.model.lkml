@@ -71,3 +71,5 @@ explore: active_users {
     relationship: one_to_one
   }
 }
+
+explore: early_funnel {}
