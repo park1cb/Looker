@@ -73,3 +73,5 @@ explore: active_users {
 }
 
 explore: early_funnel {}
+
+explore: early_funnel_update {}
