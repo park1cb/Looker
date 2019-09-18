@@ -46,7 +46,7 @@ view: early_funnel_path1 {
 
   filter: event1_date_filter {
     type: date
-    default_value: "7 days"
+    #default_value: "7 days"
   }
 
   dimension: user_id {
