@@ -61,11 +61,12 @@ view: early_funnel_path2 {
             and table4.rank=3
 
           where table1.rank=1 ;;
+          sql_trigger_value: select max(base_date) from hive.dw.dw_amplitude;;
   }
 
   filter: event1_date_filter {
     type: date
-    default_value: "7 days"
+    default_value: "10 weeks"
   }
 
   dimension: user_id {
