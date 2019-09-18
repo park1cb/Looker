@@ -67,7 +67,7 @@ view: early_funnel_path3 {
 
     filter: event1_date_filter {
       type: date
-      default_value: "10 weeks"
+      default_value: "5 weeks"
     }
 
     dimension: user_id {
