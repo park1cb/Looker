@@ -41,6 +41,7 @@ view: early_funnel_path1 {
                 and table3.event_type = 'Purchase Coins'
                 and {% condition event1_date_filter %} table3.base_date {% endcondition %}
             where table1.rank=1 ;;
+            sql_trigger_value: select max(base_date) from hive.dw.dw_amplitude;;
   }
 
   filter: event1_date_filter {
