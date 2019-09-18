@@ -77,3 +77,5 @@ explore: early_funnel {}
 explore: early_funnel_path1 {}
 
 explore: early_funnel_path2 {}
+
+explore: early_funnel_path3 {}
