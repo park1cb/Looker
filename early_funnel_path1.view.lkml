@@ -1,4 +1,4 @@
-view: early_funnel_update {
+view: early_funnel_path1 {
   derived_table: {
     sql: select table1.user_id
               ,table1.event_type as event1

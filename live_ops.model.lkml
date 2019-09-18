@@ -74,4 +74,6 @@ explore: active_users {
 
 explore: early_funnel {}
 
-explore: early_funnel_update {}
+explore: early_funnel_path1 {}
+
+explore: early_funnel_path2 {}
