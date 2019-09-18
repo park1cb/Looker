@@ -21,26 +21,30 @@ view: early_funnel_path2 {
           and table1.user_id>0
           and {% condition event1_date_filter %} cast(users.joined_at as date) {% endcondition %}
           )table1
-
-            left join
+          left join
             (
-            select user_id,event_type,event_time as event_time,json_extract_scalar(table2.event_properties, '$["Story Id"]') as story_id,rank() over (partition by user_id,json_extract_scalar(table2.event_properties, '$["Story Id"]') order by event_time) as rank
-            from hive.dw.dw_amplitude table2
-                where table2.event_type = 'Open Episode'
+                select user_id,event_type,event_time as event_time--,rank() over (partition by user_id,json_extract_scalar(table2.event_properties, '$["Story Id"]') order by event_time) as rank
+                from hive.dw.dw_amplitude table2
+                where table2.event_type = 'Viewed Home Screen'
                 and {% condition event1_date_filter %} table2.base_date {% endcondition %}
-                group by 1,2,3,4
+
             )table2
             on table1.user_id= table2.user_id
             and table1.event_time < table2.event_time
-            and table1.story_id = table2.story_id
-            and table2.rank=3
 
-            left join hive.dw.dw_amplitude table3
-                on table1.user_id=table3.user_id
-                and table2.event_time < table3.event_time
-                and table3.event_type = 'Purchase Coins'
-                and {% condition event1_date_filter %} table3.base_date {% endcondition %}
-            where table1.rank=1 ;;
+          left join
+            (
+                select table3.user_id,event_type,event_time,json_extract_scalar(table3.event_properties, '$["Story Id"]') as story_id,rank() over (partition by user_id order by event_time) as rank
+                from hive.dw.dw_amplitude table3
+
+                where event_type='Open Episode'
+                and {% condition event1_date_filter %} base_date {% endcondition %}
+                and table3.user_id>0
+            )table3
+            on table1.user_id=table3.user_id
+            and table2.event_time < table3.event_time
+            and table3.rank=2
+          where table1.rank=1 ;;
   }
 
   filter: event1_date_filter {
@@ -115,12 +119,12 @@ view: early_funnel_path2 {
     sql: count(distinct case when event1 = 'Open Episode' then ${user_id} else null end) ;;
   }
   measure: count_users_from_event_2 {
-    label: "Actual Read on First Story"
+    label: "Viewed Story Screen"
     type: number
     sql: count(distinct case when event2 = 'Open Episode' then ${user_id} else null end) ;;
   }
   measure: count_users_from_event_3 {
-    label: "Purchase"
+    label: "Open Second Story"
     type: number
     sql: count(distinct case when event3 = 'Purchase Coins' then ${user_id} else null end) ;;
   }
