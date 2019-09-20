@@ -29,9 +29,9 @@ view: early_funnel_path4 {
           left join
             (
               select  user_id,event_type,min(event_time) as event_time
-              from hive.dw.dw_amplitude
+              from hive.dw.dw_amplitude table5
               where event_type='Logout'
-              and {% condition event1_date_filter %} base_date {% endcondition %}
+              and {% condition event1_date_filter %} table5.base_date {% endcondition %}
               group by 1,2
             )table5
             on table1.user_id=table5.user_id
@@ -54,7 +54,7 @@ view: early_funnel_path4 {
                 from hive.dw.dw_amplitude table3
 
                 where event_type='Open Episode'
-                and {% condition event1_date_filter %} base_date {% endcondition %}
+                and {% condition event1_date_filter %} table3.base_date {% endcondition %}
                 and table3.user_id>0
             )table3
             on table1.user_id=table3.user_id
@@ -206,7 +206,7 @@ view: early_funnel_path4 {
   measure: count_users_from_event_5 {
     label: "Log Out"
     type: number
-    sql: count(distinct case when event5 = 'LogOut' then ${user_id} else null end) ;;
+    sql: count(distinct case when event5 = 'Logout' then ${user_id} else null end) ;;
   }
 
   measure: count_clicks_from_event_1 {
@@ -228,7 +228,7 @@ view: early_funnel_path4 {
 
   measure: count_clicks_from_event_5 {
     type: number
-    sql: count(case when event4 = 'LogOut' then ${user_id} else null end) ;;
+    sql: count(case when event4 = 'Logout' then ${user_id} else null end) ;;
   }
 
 
