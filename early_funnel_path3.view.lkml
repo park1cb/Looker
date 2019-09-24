@@ -62,7 +62,7 @@ view: early_funnel_path3 {
             and table4.rank=3
 
           where table1.rank=1 ;;
-          sql_trigger_value: select max(base_date) from hive.dw.dw_amplitude;;
+          sql_trigger_value: select date_trunc('day',now());;
     }
 
     filter: event1_date_filter {
