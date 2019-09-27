@@ -21,21 +21,10 @@ dimension: event_type {
   type: string
   sql: ${TABLE}.event_type ;;
 }
-dimension_group: event_time{
-  type: time
-  timeframes: [
-    raw,
-    time,
-    date,
-    week,
-    month,
-    quarter,
-    year
-  ]
-  convert_tz: no
-  datatype: date
-  sql: ${TABLE}.event_time ;;
-}
+  dimension_group: event_time {
+    type: time
+    sql: ${TABLE}.event_time ;;
+  }
 
 dimension: story_id {
   type: number
@@ -44,16 +33,11 @@ dimension: story_id {
 
   dimension_group: base {
     type: time
-    timeframes: [
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    convert_tz: no
-    datatype: date
     sql: ${TABLE}.base_date ;;
   }
+
+
+
+
 
 }

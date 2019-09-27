@@ -74,6 +74,8 @@ explore: active_users {
 
 explore: early_funnel {}
 
+explore: dw_amplitude_early_funnel_raw {}
+
 explore: early_funnel_path1 {}
 
 explore: early_funnel_path2 {}

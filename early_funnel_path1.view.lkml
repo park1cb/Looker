@@ -10,8 +10,8 @@ view: early_funnel_path1 {
 
           from
           (
-          select table1.user_id,event_type,event_time,json_extract_scalar(table1.event_properties, '$["Story Id"]') as story_id,rank() over (partition by user_id order by event_time) as rank
-          from hive.dw.dw_amplitude table1
+          select table1.user_id,event_type,event_time as event_time, story_id,rank() over (partition by user_id order by event_time) as rank
+          from ${dw_amplitude_early_funnel_raw.SQL_TABLE_NAME}  table1
 
           join mysql.gatsby.users users
           on users.id=table1.user_id
@@ -24,8 +24,8 @@ view: early_funnel_path1 {
 
             left join
             (
-            select user_id,event_type,event_time as event_time,json_extract_scalar(table2.event_properties, '$["Story Id"]') as story_id,rank() over (partition by user_id,json_extract_scalar(table2.event_properties, '$["Story Id"]') order by event_time) as rank
-            from hive.dw.dw_amplitude table2
+            select user_id,event_type,event_time as event_time,story_id,rank() over (partition by user_id,story_id order by event_time) as rank
+            from ${dw_amplitude_early_funnel_raw.SQL_TABLE_NAME}  table2
                 where table2.event_type = 'Open Episode'
                 and {% condition event1_date_filter %} table2.base_date {% endcondition %}
                 group by 1,2,3,4
@@ -35,7 +35,7 @@ view: early_funnel_path1 {
             and table1.story_id = table2.story_id
             and table2.rank=3
 
-            left join hive.dw.dw_amplitude table3
+            left join ${dw_amplitude_early_funnel_raw.SQL_TABLE_NAME}  table3
                 on table1.user_id=table3.user_id
                 and table2.event_time < table3.event_time
                 and table3.event_type = 'Purchase Coins'
