@@ -83,3 +83,5 @@ explore: early_funnel_path2 {}
 explore: early_funnel_path3 {}
 
 explore: early_funnel_path4 {}
+
+explore: arpu_table {}
