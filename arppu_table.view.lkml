@@ -68,46 +68,55 @@ view: arppu_table {
   dimension: month8_raw {
     type: number
     sql: ${TABLE}.month8 ;;
+    hidden: yes
   }
 
   dimension: month7_raw {
     type: number
     sql: ${TABLE}.month7 ;;
+    hidden: yes
   }
 
   dimension: month6_raw {
     type: number
     sql: ${TABLE}.month6 ;;
+    hidden: yes
   }
 
   dimension: month5_raw {
     type: number
     sql: ${TABLE}.month5 ;;
+    hidden: yes
   }
 
   dimension: month4_raw {
     type: number
     sql: ${TABLE}.month4 ;;
+    hidden: yes
   }
 
   dimension: month3_raw {
     type: number
     sql: ${TABLE}.month3 ;;
+    hidden: yes
   }
 
   dimension: month2_raw {
     type: number
     sql: ${TABLE}.month2 ;;
+    hidden: yes
   }
 
   dimension: month1_raw {
     type: number
     sql: ${TABLE}.month1 ;;
+    hidden: yes
   }
 
   dimension: month0_raw {
     type: number
     sql: ${TABLE}.month0 ;;
+    hidden: yes
   }
 
   measure: month8 {
