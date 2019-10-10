@@ -87,3 +87,5 @@ explore: early_funnel_path4 {}
 explore: arpu_table {}
 
 explore: arppu_table {}
+
+explore: paying_conversion_rate {}
