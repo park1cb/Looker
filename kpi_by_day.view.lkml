@@ -85,6 +85,11 @@ view: kpi_by_day {
     sql: ${TABLE}.viewed_stories ;;
   }
 
+  measure: total_episode_unique_vies {
+    type: average
+    sql: ${episode_unique_views} ;;
+  }
+
   measure: count {
     type: count
     drill_fields: []
