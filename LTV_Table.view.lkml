@@ -19,7 +19,7 @@ view: ltv_final {
                   on kpi.base_date_est=cast(users.joined_at as date)
 
 
-                  where cast(users.joined_at as date)>=date_trunc('month',date_add('month',-8,now()))
+                  where cast(users.joined_at as date)>=date_trunc('month',date_add('month',-10,now()))
                   and users.id not in
                   (
                   select pre_user_id
