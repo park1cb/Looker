@@ -5,17 +5,14 @@ view: kpi_by_day {
   dimension: active_users_raw {
     type: number
     sql: ${TABLE}.active_users ;;
+    hidden: yes
   }
 
   dimension_group: base_date_est {
     type: time
     timeframes: [
-      raw,
-      date,
-      week,
-      month,
-      quarter,
-      year
+      date
+
     ]
     convert_tz: no
     datatype: date
@@ -95,72 +92,72 @@ view: kpi_by_day {
   }
 
   measure: active_users {
-    type: sum
+    type: average
     sql: ${active_users_raw};;
   }
 
   measure: episode_unique_views {
-    type: sum
+    type: average
     sql: ${episode_unique_views_raw} ;;
   }
 
 
 
   measure: coin_used_users  {
-    type: sum
+    type: average
     sql: ${coin_used_users_raw} ;;
   }
 
   measure: new_installed_users {
-    type: sum
+    type: average
     sql: ${new_installed_users_raw} ;;
   }
 
   measure: new_users {
-    type: sum
+    type: average
     sql: ${new_users_raw} ;;
   }
 
   measure: paying_users {
-    type: sum
+    type: average
     sql: ${paying_users_raw} ;;
   }
 
   measure: read_users {
-    type: sum
+    type: average
     sql: ${read_users_raw} ;;
   }
 
   measure: sales {
-    type: sum
+    type: average
     sql: ${sales_raw} ;;
     value_format_name: usd
   }
 
   measure: sales_onetime_product {
-    type: sum
+    type: average
     sql: ${sales_onetime_product_raw} ;;
     value_format_name: usd
   }
 
   measure: sales_subscription_product {
-    type: sum
+    type: average
     sql: ${sales_subscription_product_raw} ;;
     value_format_name: usd
   }
 
   measure: used_coins {
-    type: sum
+    type: average
     sql: ${used_coins_raw} ;;
   }
 
   measure: viewed_episode {
-    type: sum
+    type: average
     sql: ${viewed_episodes_raw} ;;
   }
 
   measure: viewed_stories {
-    type: sum
+    type: average
     sql: ${viewed_stories_raw} ;;
   }
 
