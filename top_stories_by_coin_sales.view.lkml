@@ -31,7 +31,9 @@ view: top_stories_by_coin_sales {
       on coins2.story_string_id=story.string_id
 
       --where epi.writer_string_id='RadishOriginals'
+      where coins.amount+coins2.amount>0
       group by 1,3,4,5
+
       order by 6 desc
        ;;
       sql_trigger_value: select date_trunc('day',now());;
