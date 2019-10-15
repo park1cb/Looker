@@ -5,8 +5,8 @@ view: top_stories_by_coin_sales {
       ,max(epi."no") as Episodes
       ,story.writer_string_id
       ,story.deleted_at
-      ,coins.amount+coins2.amount as total_coins
-      ,(coins.amount+coins2.amount)/max(epi."no") as avg_coins_per_chapter
+      ,case when coins.amount is null then 0 else coins.amount end +case when coins2.amount is null then 0 else coins2.amount end as total_coins
+      ,(case when coins.amount is null then 0 else coins.amount end +case when coins2.amount is null then 0 else coins2.amount end)/max(epi."no") as avg_coins_per_chapter
       ,date_diff('month',min(epi.created_at),now()) as published_since
       from mysql.gatsby.episodes epi
 
