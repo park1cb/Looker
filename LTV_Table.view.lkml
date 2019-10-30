@@ -6,6 +6,7 @@ view: ltv_final {
                   date_format(date_trunc('Month',joined_at),'%Y-%m') as date
                   ,date_diff('day',users.joined_at,paid.created_at) as day
                   ,kpi.new_users
+                  ,case when kpi.network_name='Organic' or kpi.network_name is null then 'Organic' else 'Paid' End as network
                   ,(sum(pd.original_price))/kpi.new_users as Value
 
                   from mysql.gatsby.users users
@@ -15,8 +16,37 @@ view: ltv_final {
                   left join mysql.gatsby.products pd
                   on pd.id=paid.product_id
 
-                  join mart.mart.kpi_by_day as kpi
-                  on kpi.base_date_est=cast(users.joined_at as date)
+                  join
+                  (
+                    select cast(a.joined_at as date) as date,network.network_name,count(distinct a.id) as new_users
+                    from mysql.gatsby.users a
+                    left join mysql.gatsby.pre_signin_users b
+                    on a.id = b.pre_user_id
+                    left join(
+                      select adid.user_id,adj.network_name--,network_name
+                      from mart.mart.user_mapper_adjust adj
+                      join mart.mart.user_mapper_adjust_id adid
+                      on adid.adjust_id=adj.adid
+                      join
+                      (
+                        select distinct user_id,min(installed_at) as installed_at
+                        from mart.mart.user_mapper_adjust adj
+                        join mart.mart.user_mapper_adjust_id adid
+                        on adid.adjust_id=adj.adid
+                        where activity_kind='install'
+                        and user_id<>0
+                        group by 1
+                      )firstdate
+                      on firstdate.user_id=adid.user_id
+                      and adj.installed_at=firstdate.installed_at
+                      where activity_kind='install'
+                      and adid.user_id<>0
+                    )network
+                    on network.user_id=a.id
+                    where b.pre_user_id is null
+                    group by 1,2
+                  )as kpi
+                  on kpi.date=cast(users.joined_at as date)
 
 
                   where cast(users.joined_at as date)>=date_trunc('month',date_add('month',-10,now()))
@@ -27,13 +57,12 @@ view: ltv_final {
                   )
 
                   and date_diff('day',users.joined_at,paid.created_at)>=0
-
-                  group by 1,2,3
+                  group by 1,2,3,4
             )
 
       ,test as
       (
-      select date,day,avg(Value) as Value
+      select date,day,network,avg(Value) as Value
             from LTV
             group by 1,2
             )
@@ -41,6 +70,7 @@ view: ltv_final {
       (
       select
       Day
+      ,network
       --,element_at(kv,date_format(date_trunc('month',date_add('month',-13,now())),'%Y-%m')) as Month13
       --,element_at(kv,date_format(date_trunc('month',date_add('month',-12,now())),'%Y-%m')) as Month12
       --,element_at(kv,date_format(date_trunc('month',date_add('month',-11,now())),'%Y-%m')) as Month11
@@ -57,15 +87,16 @@ view: ltv_final {
       ,element_at(kv,date_format(date_trunc('month',date_add('month',0,now())),'%Y-%m')) as Month0
       from
       (
-      select Day,map_agg(date,value) kv
+      select Day,network,map_agg(date,value) kv
       from test
-      group by 1
+      group by 1,2
         )
       )
       , running_totals as
       (
       select
       Day
+      , network
       , sum(Month8) over (order by Day asc) as RunningMonth8
       , sum(Month7) over (order by Day asc) as RunningMonth7
       , sum(Month6) over (order by Day asc) as RunningMonth6
@@ -77,25 +108,28 @@ view: ltv_final {
       , sum(Month0) over (order by Day asc) as RunningMonth0
       from months
       )
-      select Day, RunningMonth8
-                , lag(RunningMonth8) over (order by Day asc) as RunningMonth8_prev_day
-                , RunningMonth7
-                , lag(RunningMonth7) over (order by Day asc) as RunningMonth7_prev_day
-                , RunningMonth6
-                , lag(RunningMonth6) over (order by Day asc) as RunningMonth6_prev_day
-                , RunningMonth5
-                , lag(RunningMonth5) over (order by Day asc) as RunningMonth5_prev_day
-                , RunningMonth4
-                , lag(RunningMonth4) over (order by Day asc) as RunningMonth4_prev_day
-                , RunningMonth3
-                , lag(RunningMonth3) over (order by Day asc) as RunningMonth3_prev_day
-                , RunningMonth2
-                , lag(RunningMonth2) over (order by Day asc) as RunningMonth2_prev_day
-                , RunningMonth1
-                , lag(RunningMonth1) over (order by Day asc) as RunningMonth1_prev_day
-                , RunningMonth0
-                , lag(RunningMonth0) over (order by Day asc) as RunningMonth0_prev_day
-            from running_totals
+      select
+      Day
+      , netowrk
+      , RunningMonth8
+      , lag(RunningMonth8) over (order by Day asc) as RunningMonth8_prev_day
+      , RunningMonth7
+      , lag(RunningMonth7) over (order by Day asc) as RunningMonth7_prev_day
+      , RunningMonth6
+      , lag(RunningMonth6) over (order by Day asc) as RunningMonth6_prev_day
+      , RunningMonth5
+      , lag(RunningMonth5) over (order by Day asc) as RunningMonth5_prev_day
+      , RunningMonth4
+      , lag(RunningMonth4) over (order by Day asc) as RunningMonth4_prev_day
+      , RunningMonth3
+      , lag(RunningMonth3) over (order by Day asc) as RunningMonth3_prev_day
+      , RunningMonth2
+      , lag(RunningMonth2) over (order by Day asc) as RunningMonth2_prev_day
+      , RunningMonth1
+      , lag(RunningMonth1) over (order by Day asc) as RunningMonth1_prev_day
+      , RunningMonth0
+      , lag(RunningMonth0) over (order by Day asc) as RunningMonth0_prev_day
+      from running_totals
  ;;
   }
 
@@ -109,6 +143,11 @@ view: ltv_final {
   dimension: day {
     type: number
     sql: ${TABLE}."Day" ;;
+  }
+
+  dimension: network {
+    type: string
+    sql: ${TABLE}.network ;;
   }
 
   dimension: running_month8 {
@@ -358,6 +397,7 @@ view: ltv_final {
   set: detail {
     fields: [
       day,
+      network,
       running_month8,
       running_month8_prev_day,
       running_month7,
