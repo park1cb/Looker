@@ -9,11 +9,11 @@ date_format(date_trunc('Month',users.date),'%Y-%m') as date
 ,users.organic_users+users.paid_users as new_users
 ,Case
 when {% parameter network_filter %}='Organic' Then
-  COALESCE(element_at(kr,'Organic'),0) /COALESCE(users.organic_users,0)
+  COALESCE(COALESCE(element_at(kr,'Organic'),0) /COALESCE(users.organic_users,0),0)
 when {% parameter network_filter %}='Paid' Then
-  COALESCE(element_at(kr,'Paid'),0) /COALESCE(users.paid_users,0)
+  COALESCE(COALESCE(element_at(kr,'Paid'),0) /COALESCE(users.paid_users,0),0)
 when {% parameter network_filter %}='Everything' then
-( COALESCE(element_at(kr,'Organic'),0) +  COALESCE(element_at(kr,'Paid'),0))/( COALESCE(users.organic_users,0)+ COALESCE(users.paid_users,0))
+COALESCE((COALESCE(element_at(kr,'Organic'),0) +  COALESCE(element_at(kr,'Paid'),0))/( COALESCE(users.organic_users,0)+ COALESCE(users.paid_users,0)),0)
 End as Value
 from
 (
