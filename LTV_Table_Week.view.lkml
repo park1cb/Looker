@@ -3,7 +3,7 @@ view: ltv_table_week {
     sql: with LTV as
             (
 select
-date_format(date_trunc('Month',users.date),'%Y-%m') as date
+date_format(date_trunc('Week',users.date),'%Y-%m-%d') as date
 
 ,day
 ,users.organic_users+users.paid_users as new_users
