@@ -2,33 +2,67 @@ view: ltv_table_week {
   derived_table: {
     sql: with LTV as
             (
-            select
-                  date_trunc('week',joined_at) as date
-                  ,date_diff('day',users.joined_at,paid.created_at) as day
-                  ,kpi.new_users
-                  ,(sum(pd.original_price))/kpi.new_users as Value
+select
+date_format(date_trunc('Month',users.date),'%Y-%m') as date
 
-                  from mysql.gatsby.users users
-
-                  left join mysql.gatsby.paid_coin_issues paid
-                  on paid.user_id=users.id
-                  left join mysql.gatsby.products pd
-                  on pd.id=paid.product_id
-
-                  join mart.mart.kpi_by_day as kpi
-                  on kpi.base_date_est=cast(users.joined_at as date)
-
-
-                  where cast(users.joined_at as date)>=date_trunc('week',date_add('week',-8,now()))
-                  and users.id not in
-                  (
-                  select pre_user_id
-                  from mysql.gatsby.pre_signin_users
-                  )
-
-                  and date_diff('day',users.joined_at,paid.created_at)>=0
-
-                  group by 1,2,3
+,day
+,users.organic_users+users.paid_users as new_users
+,Case
+when {% parameter network_filter %}='Organic' Then
+  COALESCE(element_at(kr,'Organic'),0) /COALESCE(users.organic_users,0)
+when {% parameter network_filter %}='Paid' Then
+  COALESCE(element_at(kr,'Paid'),0) /COALESCE(users.paid_users,0)
+when {% parameter network_filter %}='Everything' then
+( COALESCE(element_at(kr,'Organic'),0) +  COALESCE(element_at(kr,'Paid'),0))/( COALESCE(users.organic_users,0)+ COALESCE(users.paid_users,0))
+End as Value
+from
+(
+select
+date
+,element_at(kv,'Organic') as Organic_Users
+,element_at(kv,'Paid') as Paid_Users
+from
+(
+  select
+  date
+  ,map_agg(network,new_users)  as kv
+  from
+  (
+    select
+    cast(a.joined_at as date) as date
+    ,case when network.network_name='Organic' or network.network_name is null then 'Organic' else 'Paid' End as network
+    ,count(distinct a.id) as new_users
+    from mysql.gatsby.users a
+    left join mysql.gatsby.pre_signin_users b
+    on a.id = b.pre_user_id
+    left join
+    (
+      select
+      adid.user_id
+      ,adj.network_name--,network_name
+      from mart.mart.user_mapper_adjust adj
+      join mart.mart.user_mapper_adjust_id adid
+      on adid.adjust_id=adj.adid
+      join
+      (
+        select distinct user_id,min(installed_at) as installed_at
+        from mart.mart.user_mapper_adjust adj
+        join mart.mart.user_mapper_adjust_id adid
+        on adid.adjust_id=adj.adid
+        where activity_kind='install'
+        and user_id<>0
+        group by 1
+      )firstdate
+      on firstdate.user_id=adid.user_id
+      and adj.installed_at=firstdate.installed_at
+      where activity_kind='install'
+      and adid.user_id<>0
+    )network
+    on network.user_id=a.id
+    where b.pre_user_id is null
+    group by 1,2
+  )
+  group by 1
             )
 
       ,test as
@@ -105,6 +139,14 @@ view: ltv_table_week {
     type: count
     drill_fields: [detail*]
   }
+
+  parameter: network_filter{
+    type: string
+    allowed_value: { value: "Organic"}
+    allowed_value: { value: "Paid" }
+    allowed_value: { value: "Everything" }
+  }
+
 
   dimension: day {
     type: number
