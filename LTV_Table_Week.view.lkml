@@ -63,6 +63,64 @@ from
     group by 1,2
   )
   group by 1
+)
+
+) users
+
+
+left join
+(
+  select
+  date
+  ,day
+  ,map_agg(network,revenue) as kr
+  from
+  (
+    select
+    cast(a.joined_at as date) as date
+    ,case when network.network_name='Organic' or network.network_name is null then 'Organic' else 'Paid' End as network
+    ,date_diff('day',a.joined_at,paid.created_at) as day
+    ,sum(pd.original_price) as revenue
+    from mysql.gatsby.users a
+    left join mysql.gatsby.pre_signin_users b
+    on a.id = b.pre_user_id
+    left join mysql.gatsby.paid_coin_issues paid
+    on paid.user_id=a.id
+    left join mysql.gatsby.products pd
+    on pd.id=paid.product_id
+    left join
+    (
+      select
+      adid.user_id
+      ,adj.network_name--,network_name
+      from mart.mart.user_mapper_adjust adj
+      join mart.mart.user_mapper_adjust_id adid
+      on adid.adjust_id=adj.adid
+      join
+      (
+        select distinct user_id,min(installed_at) as installed_at
+        from mart.mart.user_mapper_adjust adj
+        join mart.mart.user_mapper_adjust_id adid
+        on adid.adjust_id=adj.adid
+        where activity_kind='install'
+        and user_id<>0
+        group by 1
+      )firstdate
+      on firstdate.user_id=adid.user_id
+      and adj.installed_at=firstdate.installed_at
+      where activity_kind='install'
+      and adid.user_id<>0
+    )network
+    on network.user_id=a.id
+    where b.pre_user_id is null
+    group by 1,2,3
+  )
+  group by 1,2
+
+)revenue
+on users.date=revenue.date
+
+where day>=0
             )
 
       ,test as
