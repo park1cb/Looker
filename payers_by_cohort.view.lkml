@@ -15,8 +15,12 @@ view: payers_by_cohort {
       )paid
       on paid.user_id=users.id
 
+      left join mysql.gatsby.pre_signin_users pre
+      on users.id=pre.pre_user_id
+
 
       where users.joined_at>=date '2018-10-01'
+      and pre.pre_user_id is null
        ;;
   }
 
