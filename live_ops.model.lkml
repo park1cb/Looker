@@ -95,3 +95,5 @@ explore: kpi_by_day {}
 explore: top_stories_by_coin_sales {}
 
 explore: ltv_graph_by_week {}
+
+explore: payers_by_cohort {}
