@@ -7,7 +7,7 @@ view: payer_analysis {
         , cu.created_at
         , cb.type as sales_type
         , u.joined_at
-        , s.writer_string_id as writer_id
+        , s.writer_id as writer_id
         , s.title
         , e.no as episode_no
         , cu.amount as coins
@@ -26,6 +26,11 @@ view: payer_analysis {
 
       left join mysql.gatsby.coin_balances cb
       on cb.id = cu.coin_balance_id
+
+      left join mysql.gatsby.pre_signin_users pre
+      on u.id = pre.pre_user_id
+
+      where pre.pre_user_id is null
 
 
  ;;
@@ -88,7 +93,7 @@ view: payer_analysis {
   }
 
   dimension: writer_id {
-    type: string
+    type: number
     sql: ${TABLE}.writer_id ;;
   }
 
