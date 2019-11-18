@@ -1,21 +1,29 @@
-view: payer_analysis {
+view: payers_by_cohort {
   derived_table: {
     sql: select
         u.id as user_id
         , cu.user_id as paid_user_id
         , cu.story_id
         , cu.created_at
-        , cb.type as sales_type
         , u.joined_at
         , s.writer_id as writer_id
         , s.title
         , e.no as episode_no
-        , cu.amount as coins
         , cu.coin_balance_id
         , date_diff('day',u.joined_at,cu.created_at) as days
       from mysql.gatsby.users u
 
-      left join mysql.gatsby.coin_usages cu
+      left join (
+        select cu.user_id,story_id,cu.episode_id,coin_balance_id,min(cu.created_at) created_at
+        from mysql.gatsby.coin_usages cu
+
+        left join mysql.gatsby.coin_balances cb
+        on cb.id = cu.coin_balance_id
+
+        where cb.type in ('subscription','one-time')
+
+        group by 1,2,3,4
+        )cu
       on u.id=cu.user_id
 
       left join mysql.gatsby.stories s
@@ -24,14 +32,10 @@ view: payer_analysis {
       left join mysql.gatsby.episodes e
       on cu.episode_id = e.id
 
-      left join mysql.gatsby.coin_balances cb
-      on cb.id = cu.coin_balance_id
-
       left join mysql.gatsby.pre_signin_users pre
       on u.id = pre.pre_user_id
 
       where pre.pre_user_id is null
-
 
  ;;
   }
@@ -122,6 +126,32 @@ view: payer_analysis {
     sql: ${TABLE}."days" ;;
   }
 
+  dimension: payer_cohort {
+    case: {
+      when: {
+        sql: ${days} is null ;;
+        label: "Non PU"
+      }
+      when: {
+        sql: ${days}=0;;
+        label: "D0"
+      }
+      when: {
+        sql: ${days}=1;;
+        label: "D1"
+      }
+      when: {
+        sql: ${days}=2;;
+        label: "D2"
+      }
+      when: {
+        sql: ${days}=3;;
+        label: "D3"
+      }
+      else:"D4+"
+    }
+  }
+
   measure: new_users {
     type: count_distinct
     sql: ${user_id} ;;
@@ -140,6 +170,11 @@ view: payer_analysis {
   measure: total_coins {
     type: sum
     sql: ${coins} ;;
+  }
+
+  measure: episode_count {
+    type: max
+    sql: ${episode_no} ;;
   }
 
 
