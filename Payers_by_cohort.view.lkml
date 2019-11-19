@@ -1,3 +1,4 @@
+include: "/*.view.lkml"
 view: payers_by_cohort {
   derived_table: {
     sql: select
@@ -14,15 +15,12 @@ view: payers_by_cohort {
       from mysql.gatsby.users u
 
       left join (
-        select cu.user_id,story_id,cu.episode_id,coin_balance_id,min(cu.created_at) created_at
+        select cu.user_id,story_id,cu.episode_id,coin_balance_id,cu.created_at
         from mysql.gatsby.coin_usages cu
 
-        left join mysql.gatsby.coin_balances cb
-        on cb.id = cu.coin_balance_id
-
-        where cb.type in ('subscription','one-time')
-
-        group by 1,2,3,4
+        left join ${first_paid_episode_purchase_date.SQL_TABLE_NAME} cb
+        on cb.user_id = cu.user_id
+        and cb.created_at=cu.created_at
         )cu
       on u.id=cu.user_id
 
