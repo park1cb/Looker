@@ -122,6 +122,32 @@ view: payer_analysis {
     sql: ${TABLE}."days" ;;
   }
 
+  dimension: payer_cohort {
+    case: {
+      when: {
+        sql: ${days} is null ;;
+        label: "Non PU"
+      }
+      when: {
+        sql: ${days}=0;;
+        label: "D0"
+      }
+      when: {
+        sql: ${days}=1;;
+        label: "D1"
+      }
+      when: {
+        sql: ${days}=2;;
+        label: "D2"
+      }
+      when: {
+        sql: ${days}=3;;
+        label: "D3"
+      }
+      else:"D4+"
+    }
+  }
+
   measure: new_users {
     type: count_distinct
     sql: ${user_id} ;;
@@ -132,10 +158,10 @@ view: payer_analysis {
     sql: ${paid_user_id} ;;
   }
 
-  measure: paying_transactions {
-    type: sum
-    sql: case when ${paid_user_id} is not null then 1 else 0 end ;;
-  }
+  #measure: paying_transactions {
+  #  type: sum
+  #  sql: case when ${paid_user_id} is not null then 1 else 0 end ;;
+  #}
 
   measure: total_coins {
     type: sum

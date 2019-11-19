@@ -1,39 +1,26 @@
 include: "/*.view.lkml"
 view: payers_by_cohort {
   derived_table: {
-    sql: select
-        u.id as user_id
-        , cu.user_id as paid_user_id
-        , cu.story_id
-        , cu.created_at
-        , u.joined_at
-        , s.writer_id as writer_id
-        , s.title
-        , e.no as episode_no
-        , cu.coin_balance_id
-        , date_diff('day',u.joined_at,cu.created_at) as days
-      from mysql.gatsby.users u
+    sql: with mast as
+      (
+      select *
+      from ${payer_analysis.SQL_TABLE_NAME}
+      )
+      , active as
+      (
+      select mast.user_id,last_used_at,rank() over (partition by mast.user_id order by last_used_at desc) as rank
+      from mast mast
 
-      left join (
-        select cu.user_id,story_id,cu.episode_id,coin_balance_id,cu.created_at
-        from mysql.gatsby.coin_usages cu
+      left join hive.dm.active_users_utc active
+      on active.user_id=mast.user_id
+      and active.last_used_at<=mast.created_at
+      )
 
-        left join ${first_paid_episode_purchase_date.SQL_TABLE_NAME} cb
-        on cb.user_id = cu.user_id
-        and cb.created_at=cu.created_at
-        )cu
-      on u.id=cu.user_id
-
-      left join mysql.gatsby.stories s
-      on cu.story_id = s.id
-
-      left join mysql.gatsby.episodes e
-      on cu.episode_id = e.id
-
-      left join mysql.gatsby.pre_signin_users pre
-      on u.id = pre.pre_user_id
-
-      where pre.pre_user_id is null
+      select mast.*
+      from mast mast
+      left join active active
+      on active.user_id=mast.user_id
+      and active.rank=1
 
  ;;
   }
