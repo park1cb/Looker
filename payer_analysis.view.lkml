@@ -132,7 +132,7 @@ view: payer_analysis {
     sql: ${paid_user_id} ;;
   }
 
-  measure: new_paid_users {
+  measure: paying_transactions {
     type: sum
     sql: case when ${paid_user_id} is not null then 1 else 0 end ;;
   }

@@ -101,3 +101,5 @@ explore: payers_by_cohort {}
 explore: sales_by_story_type {}
 
 explore: payer_analysis {}
+
+explore: first_paid_episode_purchase_date {}
