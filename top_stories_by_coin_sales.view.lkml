@@ -36,7 +36,7 @@ view: top_stories_by_coin_sales {
 
       order by 6 desc
        ;;
-      sql_trigger_value: select date_trunc('day',now());;
+      #sql_trigger_value: select date_trunc('day',now());;
   }
 
   suggestions: no
