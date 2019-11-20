@@ -12,6 +12,7 @@ view: payer_analysis {
         , e.no as episode_no
         , cu.amount as coins
         , cu.coin_balance_id
+        , tscv.value as writer_payout
         , date_diff('day',u.joined_at,cu.created_at) as days
       from mysql.gatsby.users u
 
@@ -26,6 +27,9 @@ view: payer_analysis {
 
       left join mysql.gatsby.coin_balances cb
       on cb.id = cu.coin_balance_id
+
+      left join mysql.gatsby.transfer_story_coin_values tscv
+      on tscv.story_id=s.id
 
       left join mysql.gatsby.pre_signin_users pre
       on u.id = pre.pre_user_id
@@ -148,6 +152,17 @@ view: payer_analysis {
     }
   }
 
+  dimension: writer_payout {
+    type: number
+    sql: ${TABLE}.writer_payout ;;
+    value_format_name: usd
+  }
+
+  dimension: high_margin_story_flag {
+    type: yesno
+    sql: ${writer_payout}<0.042 or ${writer_id}=705918 ;;
+  }
+
   measure: new_users {
     type: count_distinct
     sql: ${user_id} ;;
@@ -156,6 +171,12 @@ view: payer_analysis {
   measure: new_dist_paid_users {
     type: count_distinct
     sql: ${paid_user_id} ;;
+  }
+
+  measure: writer_payout_cost {
+    type: sum
+    sql: ${writer_payout} ;;
+    value_format_name: usd
   }
 
   #measure: paying_transactions {
