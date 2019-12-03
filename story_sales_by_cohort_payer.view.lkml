@@ -45,6 +45,7 @@ view: story_sales_by_cohort_payer {
       created_at
       ,story_id
       ,title
+      ,sales_type
       ,element_at(cp,'Day 0') as "Day 0"
       ,element_at(cp,'Day 1-3') as "Day 1-3"
       ,element_at(cp,'Day 4-7') as "Day 4-7"
@@ -65,6 +66,7 @@ view: story_sales_by_cohort_payer {
       from mast
       group by 1,2,3,4
       )
+      where created_at>=timestamp '2019-05-01 00:00:00'
        ;;
   }
 
