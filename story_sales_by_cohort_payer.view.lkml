@@ -38,7 +38,7 @@ view: story_sales_by_cohort_payer {
 
       where cast(cu.created_at at time zone '-05:00' as date)<=cast(date_add('day',-1,now()) as date)
       and cast(cu.created_at at time zone '-05:00' as date)>=cast(date_add('day',-90,now()) as date)
-      group by 1,2,3,4
+      group by 1,2,3,4,5
       )
 
       select
@@ -61,7 +61,7 @@ view: story_sales_by_cohort_payer {
 
       from
       (
-      select created_at,story_id,title,map_agg(cohort,payers) cp
+      select created_at,story_id,title,sales_type,map_agg(cohort,payers) cp
       from mast
       group by 1,2,3
       )
