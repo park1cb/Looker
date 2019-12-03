@@ -31,10 +31,6 @@ view: payer_analysis {
       left join mysql.gatsby.transfer_story_coin_values tscv
       on tscv.story_id=s.id
 
-      left join mysql.gatsby.pre_signin_users pre
-      on u.id = pre.pre_user_id
-
-      where pre.pre_user_id is null
 
 
  ;;
