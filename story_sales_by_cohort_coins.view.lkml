@@ -63,7 +63,7 @@ view: story_sales_by_cohort_coins {
       (
       select created_at,story_id,title,sales_type,map_agg(cohort,coins) cp
       from mast
-      group by 1,2,3
+      group by 1,2,3,4
       )
        ;;
   }
