@@ -107,3 +107,7 @@ explore: first_paid_episode_purchase_date {}
 explore: cohoted_by_first_actual_read {}
 
 explore: first_actual_read_dt_est {}
+
+explore: story_sales_by_cohort_payer {}
+
+explore: story_sales_by_cohort_coins {}
