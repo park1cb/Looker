@@ -142,7 +142,7 @@ view: payer_analysis {
     sql: case when ${TABLE}.is_completed=1 then ${TABLE}.completed_at else null end ;;
   }
 
-  dimension: total_available_episodes {
+  dimension: total_available_episodes_in_DB {
     description: "current available episodes in the database"
     type: number
     sql: ${TABLE}.total_episodes ;;
