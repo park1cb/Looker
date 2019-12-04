@@ -9,6 +9,12 @@ view: payer_analysis {
         , u.joined_at
         , s.writer_id as writer_id
         , s.title
+        , s.chapter_count
+        , s.is_completed
+        , s_info.first_published_at
+        , s_info.completed_at
+        , s_info.total_episodes
+        , s.views
         , e.no as episode_no
         , cu.amount as coins
         , cu.coin_balance_id
@@ -22,8 +28,20 @@ view: payer_analysis {
       left join mysql.gatsby.stories s
       on cu.story_id = s.id
 
+      left join
+      (
+        select story.id,min(epi.published_at) as first_published_at,max(epi."no") as total_episodes,max(epi.published_at) as completed_at
+        from mysql.gatsby.stories story
+        join mysql.gatsby.episodes epi
+        on epi.story_id=story.id
+        group by 1
+      )s_info
+      on s_info.id=s.id
+
+
       left join mysql.gatsby.episodes e
       on cu.episode_id = e.id
+
 
       left join mysql.gatsby.coin_balances cb
       on cb.id = cu.coin_balance_id
@@ -102,9 +120,43 @@ view: payer_analysis {
     sql: ${TABLE}.title ;;
   }
 
+  dimension: chapter_count {
+    type: number
+    sql: ${TABLE}.chapter_count ;;
+  }
+
+  dimension: is_completed {
+    type: yesno
+    sql: ${TABLE}.is_completed=1;;
+  }
+
+  dimension: first_published_at {
+    description: "first episode published date"
+    type: date
+    sql: ${TABLE}.first_published_at ;;
+  }
+
+  dimension: completed_at {
+    description: "episode completed date"
+    type: date
+    sql: case when ${TABLE}.is_completed=1 then ${TABLE}.completed_at else null end ;;
+  }
+
+  dimension: total_available_episodes {
+    description: "current available episodes in the database"
+    type: number
+    sql: ${TABLE}.total_episodes ;;
+  }
+
+
   dimension: episode_no {
     type: number
     sql: ${TABLE}.episode_no ;;
+  }
+
+  dimension: views {
+    type: number
+    sql: ${TABLE}.views ;;
   }
 
   dimension: coins {
@@ -159,6 +211,12 @@ view: payer_analysis {
     sql: ${writer_payout}<0.042 or ${writer_id}=705918 ;;
   }
 
+  measure: total_available_episode {
+    type: number
+    sql: max(${episode_no}) ;;
+  }
+
+
   measure: new_users {
     type: count_distinct
     sql: ${user_id} ;;
@@ -184,6 +242,7 @@ view: payer_analysis {
     type: sum
     sql: ${coins} ;;
   }
+
 
 
 
