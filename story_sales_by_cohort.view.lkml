@@ -1,4 +1,4 @@
-view: story_sales_by_cohort_payer {
+view: story_sales_by_cohort {
   derived_table: {
     sql: with mast as
       (
