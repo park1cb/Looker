@@ -294,7 +294,7 @@ view: story_sales_by_cohort {
   measure: Day_4_7_Coins {
     label: "Day 4~7 Coins"
     type: sum
-    sql: ${day_47} ;;
+    sql: ${day_47_coins} ;;
   }
   measure: Day_8_15_Coins {
     label: "Day 8~15 Coins"
