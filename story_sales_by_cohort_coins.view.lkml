@@ -2,7 +2,7 @@ view: story_sales_by_cohort_coins {
   derived_table: {
     sql: with mast as
       (
-      select cu.created_at
+      select cast(cu.created_at + interval '5' hour as date) as created_at
       ,case when date_diff('day',u.joined_at,cu.created_at)=0 then 'Day 0'
       When date_diff('day',u.joined_at,cu.created_at)>0 and date_diff('day',u.joined_at,cu.created_at)<=3 Then 'Day 1-3'
       When date_diff('day',u.joined_at,cu.created_at)>3 and date_diff('day',u.joined_at,cu.created_at)<=7 then 'Day 4-7'
@@ -36,8 +36,7 @@ view: story_sales_by_cohort_coins {
       on tscv.story_id=s.id
 
 
-      where cast(cu.created_at at time zone '-05:00' as date)<=cast(date_add('day',-1,now()) as date)
-      and cast(cu.created_at at time zone '-05:00' as date)>=cast(date_add('day',-90,now()) as date)
+      where cast(cu.created_at + interval '5' hour as date)>=cast(date_add('day',-90,now()) as date)
       group by 1,2,3,4,5
       )
 
@@ -73,7 +72,6 @@ view: story_sales_by_cohort_coins {
   dimension_group: created_at {
     type: time
     timeframes: [
-      raw,
       date,
       week,
       month,
@@ -82,7 +80,7 @@ view: story_sales_by_cohort_coins {
       hour_of_day,
       day_of_week
     ]
-    convert_tz: yes
+    convert_tz: no
     datatype: date
     sql: ${TABLE}.created_at ;;
   }

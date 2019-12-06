@@ -2,7 +2,8 @@ view: story_sales_by_cohort_payer {
   derived_table: {
     sql: with mast as
       (
-      select cu.created_at
+
+      select cast(cu.created_at + interval '5' hour as date) as created_at
       ,case when date_diff('day',u.joined_at,cu.created_at)=0 then 'Day 0'
       When date_diff('day',u.joined_at,cu.created_at)>0 and date_diff('day',u.joined_at,cu.created_at)<=3 Then 'Day 1-3'
       When date_diff('day',u.joined_at,cu.created_at)>3 and date_diff('day',u.joined_at,cu.created_at)<=7 then 'Day 4-7'
@@ -36,8 +37,7 @@ view: story_sales_by_cohort_payer {
       on tscv.story_id=s.id
 
 
-      where cast(cu.created_at at time zone '-05:00' as date)<=cast(date_add('day',-1,now()) as date)
-      and cast(cu.created_at at time zone '-05:00' as date)>=cast(date_add('day',-90,now()) as date)
+      where cast(cu.created_at + interval '5' hour as date)>=cast(date_add('day',-90,now()) as date)
       group by 1,2,3,4,5
       )
 
@@ -56,24 +56,32 @@ view: story_sales_by_cohort_payer {
       ,element_at(cp,'Day 121-240') as "Day 121-240"
       ,element_at(cp,'Day 241-360') as "Day 241-360"
       ,element_at(cp,'Day 361+') as "Day 361 Plus"
+      ,element_at(cc,'Day 0') as "Day 0 Coins"
+      ,element_at(cc,'Day 1-3') as "Day 1-3 Coins"
+      ,element_at(cc,'Day 4-7') as "Day 4-7 Coins"
+      ,element_at(cc,'Day 8-15') as "Day 8-15 Coins"
+      ,element_at(cc,'Day 16-30') as "Day 16-30 Coins"
+      ,element_at(cc,'Day 31-60') as "Day 31-60 Coins"
+      ,element_at(cc,'Day 61-120') as "Day 61-120 Coins"
+      ,element_at(cc,'Day 121-240') as "Day 121-240 Coins"
+      ,element_at(cc,'Day 241-360') as "Day 241-360 Coins"
+      ,element_at(cc,'Day 361+') as "Day 361 Plus Coins"
 
 
 
 
       from
       (
-      select created_at,story_id,title,sales_type,map_agg(cohort,payers) cp
+      select created_at,story_id,title,sales_type,map_agg(cohort,payers) cp,map_agg(cohort,coins) cc
       from mast
       group by 1,2,3,4
       )
-      where created_at>=timestamp '2019-05-01 00:00:00'
        ;;
   }
 
   dimension_group: created_at {
     type: time
     timeframes: [
-      raw,
       date,
       week,
       month,
@@ -82,7 +90,7 @@ view: story_sales_by_cohort_payer {
       hour_of_day,
       day_of_week
     ]
-    convert_tz: yes
+    convert_tz: no
     datatype: date
     sql: ${TABLE}.created_at ;;
   }
@@ -161,6 +169,67 @@ view: story_sales_by_cohort_payer {
     label: "Day 361 Plus"
     sql: ${TABLE}."Day 361 Plus" ;;
   }
+
+  dimension: day_0_coins {
+    type: number
+    label: "Day 0 Coins"
+    sql: ${TABLE}."Day 0 Coins" ;;
+  }
+
+  dimension: day_13_coins {
+    type: number
+    label: "Day 1-3 Coins"
+    sql: ${TABLE}."Day 1-3 Coins" ;;
+  }
+
+  dimension: day_47_coins {
+    type: number
+    label: "Day 4-7 Coins"
+    sql: ${TABLE}."Day 4-7 Coins" ;;
+  }
+
+  dimension: day_815_coins {
+    type: number
+    label: "Day 8-15 Coins"
+    sql: ${TABLE}."Day 8-15 Coins" ;;
+  }
+
+  dimension: day_1630_coins {
+    type: number
+    label: "Day 16-30 Coins"
+    sql: ${TABLE}."Day 16-30 Coins" ;;
+  }
+
+  dimension: day_3160_coins {
+    type: number
+    label: "Day 31-60 Coins"
+    sql: ${TABLE}."Day 31-60 Coins" ;;
+  }
+
+  dimension: day_61120_coins {
+    type: number
+    label: "Day 61-120 Coins"
+    sql: ${TABLE}."Day 61-120 Coins" ;;
+  }
+
+  dimension: day_121240_coins {
+    type: number
+    label: "Day 121-240 Coins"
+    sql: ${TABLE}."Day 121-240 Coins" ;;
+  }
+
+  dimension: day_241360_coins {
+    type: number
+    label: "Day 241-360 Coins"
+    sql: ${TABLE}."Day 241-360 Coins" ;;
+  }
+
+  dimension: day_361_plus_coins {
+    type: number
+    label: "Day 361 Plus Coins"
+    sql: ${TABLE}."Day 361 Plus Coins" ;;
+  }
+
   measure: Day0 {
     label: "Day 0"
     type: sum
@@ -210,5 +279,56 @@ view: story_sales_by_cohort_payer {
     label: "Day 361+"
     type: sum
     sql: ${day_361_plus} ;;
+  }
+
+  measure: Day0_Coins {
+    label: "Day 0 Coins"
+    type: sum
+    sql: ${day_0_coins} ;;
+  }
+  measure: Day_1_3_Coins {
+    label: "Day 1~3 Coins"
+    type: sum
+    sql: ${day_13_coins} ;;
+  }
+  measure: Day_4_7_Coins {
+    label: "Day 4~7 Coins"
+    type: sum
+    sql: ${day_47} ;;
+  }
+  measure: Day_8_15_Coins {
+    label: "Day 8~15 Coins"
+    type: sum
+    sql: ${day_815_coins} ;;
+  }
+  measure: Day_16_30_Coins {
+    label: "Day 16~30 Coins"
+    type: sum
+    sql: ${day_1630_coins} ;;
+  }
+  measure: Day_31_60_Coins {
+    label: "Day 31~60 Coins"
+    type: sum
+    sql: ${day_3160_coins} ;;
+  }
+  measure: Day_61_120_Coins {
+    label: "Day 61~120 Coins"
+    type: sum
+    sql: ${day_61120_coins} ;;
+  }
+  measure: Day_121_240_Coins {
+    label: "Day 121~240 Coins"
+    type: sum
+    sql: ${day_121240_coins} ;;
+  }
+  measure: Day_241_360_Coins {
+    label: "Day 241~360 Coins"
+    type: sum
+    sql: ${day_241360_coins} ;;
+  }
+  measure: Day_361_Coins {
+    label: "Day 361+ Coins"
+    type: sum
+    sql: ${day_361_plus_coins} ;;
   }
 }
