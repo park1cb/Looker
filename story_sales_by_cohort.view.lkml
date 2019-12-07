@@ -14,6 +14,8 @@ view: story_sales_by_cohort {
       when date_diff('day',u.joined_at,cu.created_at)>121 and date_diff('day',u.joined_at,cu.created_at)<=240 then 'Day 121-240'
       when date_diff('day',u.joined_at,cu.created_at)>241 and date_diff('day',u.joined_at,cu.created_at)<=360 then 'Day 241-360'
       ELSE 'Day 361+' END as cohort
+      ,case when date_diff('day',u.joined_at,cu.created_at)>=0 and date_diff('day',u.joined_at,cu.created_at)<=7 then 'Day 7'
+      else 'N' end as day7payer
       ,s.id as story_id
       ,s.title
       ,cb.type as sales_type
@@ -38,7 +40,7 @@ view: story_sales_by_cohort {
 
 
       where cast(cu.created_at + interval '5' hour as date)>=cast(date_add('day',-90,now()) as date)
-      group by 1,2,3,4,5
+      group by 1,2,3,4,5,6
       )
 
       select
@@ -66,16 +68,19 @@ view: story_sales_by_cohort {
       ,element_at(cc,'Day 121-240') as "Day 121-240 Coins"
       ,element_at(cc,'Day 241-360') as "Day 241-360 Coins"
       ,element_at(cc,'Day 361+') as "Day 361 Plus Coins"
+      ,element_at(d7,'Day 7') as "Day 7 Payers"
+
 
 
 
 
       from
       (
-      select created_at,story_id,title,sales_type,map_agg(cohort,payers) cp,map_agg(cohort,coins) cc
+      select created_at,story_id,title,sales_type,map_agg(cohort,payers) cp,map_agg(cohort,coins) cc,map_agg(day7payer,payers) d7
       from mast
       group by 1,2,3,4
       )
+      where story_id={% parameter story_id %}
        ;;
   }
 
@@ -95,9 +100,9 @@ view: story_sales_by_cohort {
     sql: ${TABLE}.created_at ;;
   }
 
-  dimension: story_id {
+  parameter: story_id {
     type: number
-    sql: ${TABLE}.story_id ;;
+    default_value: "8602"
   }
 
   dimension: title {
@@ -109,6 +114,13 @@ view: story_sales_by_cohort {
     type: string
     sql: ${TABLE}.sales_type ;;
   }
+
+  dimension: paid_coins {
+    type: yesno
+    sql: ${sales_type}='one-time' or ${sales_type}='subscription' ;;
+  }
+
+
 
   dimension: day_0 {
     type: number
@@ -230,6 +242,11 @@ view: story_sales_by_cohort {
     sql: ${TABLE}."Day 361 Plus Coins" ;;
   }
 
+  dimension: day7payers {
+    type: number
+    sql: ${TABLE}."Day 7 Payers" ;;
+  }
+
   measure: Day0 {
     label: "Day 0"
     type: sum
@@ -331,4 +348,11 @@ view: story_sales_by_cohort {
     type: sum
     sql: ${day_361_plus_coins} ;;
   }
+
+  measure: Day_7_Payers {
+    label: "Day 7 Payers"
+    type: sum
+    sql: ${day7payers} ;;
+  }
+
 }
