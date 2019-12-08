@@ -39,7 +39,7 @@ view: story_sales_by_cohort {
       on tscv.story_id=s.id
 
 
-      where cast(cu.created_at + interval '5' hour as date)>=cast(date_add('day',-90,now()) as date)
+      where cast(cu.created_at + interval '5' hour as date)>=cast(date_add('day',-30,now()) as date)
       and s.id={% parameter story_id %}
       group by 1,2,3,4,5,6
       )
