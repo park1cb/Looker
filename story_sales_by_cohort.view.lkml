@@ -32,7 +32,10 @@ view: story_sales_by_cohort {
       left join mysql.gatsby.episodes e
       on cu.episode_id = e.id
 
-      left join mysql.gatsby.coin_balances cb
+      left join
+      (select id,type
+      from mysql.gatsby.coin_balances cb
+      )cb
       on cb.id = cu.coin_balance_id
 
       left join mysql.gatsby.transfer_story_coin_values tscv
