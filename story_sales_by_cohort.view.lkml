@@ -40,6 +40,7 @@ view: story_sales_by_cohort {
 
 
       where cast(cu.created_at + interval '5' hour as date)>=cast(date_add('day',-90,now()) as date)
+      and s.id_id={% parameter story_id %}
       group by 1,2,3,4,5,6
       )
 
@@ -80,7 +81,7 @@ view: story_sales_by_cohort {
       from mast
       group by 1,2,3,4
       )
-      where story_id={% parameter story_id %}
+
        ;;
   }
 
