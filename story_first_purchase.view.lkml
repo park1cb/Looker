@@ -48,7 +48,7 @@ view: story_first_purchase {
       quarter,
       year
     ]
-    convert_tz: no
+    convert_tz: yes
     datatype: date
     sql: ${TABLE}.joined_at ;;
   }
@@ -91,7 +91,7 @@ view: story_first_purchase {
       month,
       quarter,
       year  ]
-    convert_tz: no
+    convert_tz: yes
     datatype: date
     sql: ${TABLE}.purchased_at ;;
   }

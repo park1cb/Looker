@@ -109,7 +109,7 @@ explore: cohoted_by_first_actual_read {}
 explore: first_actual_read_dt_est {}
 
 explore: story_sales_by_cohort {
-  persist_for: "6 hours"
+  persist_for: "5 minutes"
 }
 
 explore: story_first_purchase {}

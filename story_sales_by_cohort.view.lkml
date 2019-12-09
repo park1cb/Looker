@@ -3,7 +3,7 @@ view: story_sales_by_cohort {
     sql: with mast as
       (
 
-      select cast(cu.created_at + interval '5' hour as date) as created_at
+      select cast(cu.created_at +interval '5' hour as date) as created_at
       ,case when date_diff('day',u.joined_at,cu.created_at)=0 then 'Day 0'
       When date_diff('day',u.joined_at,cu.created_at)>0 and date_diff('day',u.joined_at,cu.created_at)<=3 Then 'Day 1-3'
       When date_diff('day',u.joined_at,cu.created_at)>3 and date_diff('day',u.joined_at,cu.created_at)<=7 then 'Day 4-7'
@@ -16,8 +16,7 @@ view: story_sales_by_cohort {
       ELSE 'Day 361+' END as cohort
       ,case when date_diff('day',u.joined_at,cu.created_at)>=0 and date_diff('day',u.joined_at,cu.created_at)<=7 then 'Day 7'
       else 'N' end as day7payer
-      ,s.id as story_id
-      ,s.title
+      ,cu.story_id as story_id
       ,cb.type as sales_type
       ,count(distinct cu.user_id) Payers
       ,sum(cu.amount) as coins
@@ -26,11 +25,11 @@ view: story_sales_by_cohort {
       left join mysql.gatsby.coin_usages cu
       on u.id=cu.user_id
 
-      left join mysql.gatsby.stories s
-      on cu.story_id = s.id
+      --left join mysql.gatsby.stories s
+      --on cu.story_id = s.id
 
-      left join mysql.gatsby.episodes e
-      on cu.episode_id = e.id
+      --left join mysql.gatsby.episodes e
+      --on cu.episode_id = e.id
 
       left join
       (select id,type
@@ -38,19 +37,18 @@ view: story_sales_by_cohort {
       )cb
       on cb.id = cu.coin_balance_id
 
-      left join mysql.gatsby.transfer_story_coin_values tscv
-      on tscv.story_id=s.id
+      --left join mysql.gatsby.transfer_story_coin_values tscv
+      --on tscv.story_id=s.id
 
 
-      where cast(cu.created_at + interval '5' hour as date)>=cast(date_add('day',-30,now()) as date)
-      and s.id={% parameter story_id %}
-      group by 1,2,3,4,5,6
+      where cu.created_at>=now() - interval '15' day
+      and cu.story_id={% parameter story_id %}
+      group by 1,2,3,4,5
       )
 
       select
       created_at
       ,story_id
-      ,title
       ,sales_type
       ,element_at(cp,'Day 0') as "Day 0"
       ,element_at(cp,'Day 1-3') as "Day 1-3"
@@ -80,9 +78,9 @@ view: story_sales_by_cohort {
 
       from
       (
-      select created_at,story_id,title,sales_type,map_agg(cohort,payers) cp,map_agg(cohort,coins) cc,map_agg(day7payer,payers) d7
+      select created_at,story_id,sales_type,map_agg(cohort,payers) cp,map_agg(cohort,coins) cc,map_agg(day7payer,payers) d7
       from mast
-      group by 1,2,3,4
+      group by 1,2,3
       )
 
        ;;
@@ -109,10 +107,6 @@ view: story_sales_by_cohort {
     default_value: "8602"
   }
 
-  dimension: title {
-    type: string
-    sql: ${TABLE}.title ;;
-  }
 
   dimension: sales_type {
     type: string
