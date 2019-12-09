@@ -111,3 +111,5 @@ explore: first_actual_read_dt_est {}
 explore: story_sales_by_cohort {
   persist_for: "6 hours"
 }
+
+explore: story_first_purchase {}
