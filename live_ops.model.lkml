@@ -123,3 +123,5 @@ explore: episode_read_paid_nonpaid {
 explore: stories {
   persist_for: "24 hours"
 }
+
+explore: story_sales_by_cohot_raw_data {}
