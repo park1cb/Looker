@@ -1,3 +1,5 @@
+include: "story_sales_by_cohort_raw_data.view"
+
 view: story_sales_by_cohort_raw_data {
   derived_table: {
     sql: select cast(cu.created_at +interval '5' hour as date) as created_at
