@@ -124,4 +124,4 @@ explore: stories {
   persist_for: "24 hours"
 }
 
-explore: story_sales_by_cohot_raw_data {}
+explore: story_sales_by_cohort_raw_data {}
