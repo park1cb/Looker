@@ -112,4 +112,6 @@ explore: story_sales_by_cohort {
   persist_for: "5 minutes"
 }
 
-explore: story_first_purchase {}
+explore: story_first_purchase {
+  persist_for: "5 minutes"
+}

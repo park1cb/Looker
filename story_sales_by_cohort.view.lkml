@@ -14,8 +14,8 @@ view: story_sales_by_cohort {
       when date_diff('day',u.joined_at,cu.created_at)>121 and date_diff('day',u.joined_at,cu.created_at)<=240 then 'Day 121-240'
       when date_diff('day',u.joined_at,cu.created_at)>241 and date_diff('day',u.joined_at,cu.created_at)<=360 then 'Day 241-360'
       ELSE 'Day 361+' END as cohort
-      ,case when date_diff('day',u.joined_at,cu.created_at)>=0 and date_diff('day',u.joined_at,cu.created_at)<=7 then 'Day 7'
-      else 'N' end as day7payer
+      --,case when date_diff('day',u.joined_at,cu.created_at)>=0 and date_diff('day',u.joined_at,cu.created_at)<=7 then 'Day 7'
+      --else 'N' end as day7payer
       ,cu.story_id as story_id
       ,cb.type as sales_type
       ,count(distinct cu.user_id) Payers
@@ -41,9 +41,9 @@ view: story_sales_by_cohort {
       --on tscv.story_id=s.id
 
 
-      where cu.created_at>=now() - interval '15' day
+      where cu.created_at>=now() - interval '10' day
       and cu.story_id={% parameter story_id %}
-      group by 1,2,3,4,5
+      group by 1,2,3,4--,5
       )
 
       select
@@ -70,7 +70,7 @@ view: story_sales_by_cohort {
       ,element_at(cc,'Day 121-240') as "Day 121-240 Coins"
       ,element_at(cc,'Day 241-360') as "Day 241-360 Coins"
       ,element_at(cc,'Day 361+') as "Day 361 Plus Coins"
-      ,element_at(d7,'Day 7') as "Day 7 Payers"
+      --,element_at(d7,'Day 7') as "Day 7 Payers"
 
 
 
@@ -78,7 +78,7 @@ view: story_sales_by_cohort {
 
       from
       (
-      select created_at,story_id,sales_type,map_agg(cohort,payers) cp,map_agg(cohort,coins) cc,map_agg(day7payer,payers) d7
+      select created_at,story_id,sales_type,map_agg(cohort,payers) cp,map_agg(cohort,coins) cc--,map_agg(day7payer,payers) d7
       from mast
       group by 1,2,3
       )
@@ -347,10 +347,10 @@ view: story_sales_by_cohort {
     sql: ${day_361_plus_coins} ;;
   }
 
-  measure: Day_7_Payers {
-    label: "Day 7 Payers"
-    type: sum
-    sql: ${day7payers} ;;
-  }
+  #measure: Day_7_Payers {
+  #  label: "Day 7 Payers"
+  #  type: sum
+  #  sql: ${day7payers} ;;
+  #}
 
 }
