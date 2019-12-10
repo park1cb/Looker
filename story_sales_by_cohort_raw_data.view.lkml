@@ -28,10 +28,10 @@ view: story_sales_by_cohort_raw_data {
       and cb.created_at<=cu.created_at
 
 
-      where cu.created_at>=now() - interval '8' day
+      where cu.created_at>=now() - interval '60' day
       group by 1,2,3,4--,5
  ;;
-    sql_trigger_value: select date_trunc('day',now());;
+    sql_trigger_value: select date_trunc('hour',now());;
   }
 
   suggestions: no
