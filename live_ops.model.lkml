@@ -109,9 +109,13 @@ explore: cohoted_by_first_actual_read {}
 explore: first_actual_read_dt_est {}
 
 explore: story_sales_by_cohort {
-  persist_for: "5 minutes"
+  persist_for: "30 minutes"
 }
 
 explore: story_first_purchase {
-  persist_for: "5 minutes"
+  persist_for: "30 minutes"
+}
+
+explore: episode_read_paid_nonpaid {
+  persist_for: "30 minutes"
 }
