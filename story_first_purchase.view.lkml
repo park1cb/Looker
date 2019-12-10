@@ -1,38 +1,11 @@
 view: story_first_purchase {
   derived_table: {
-    sql: select
-      u.joined_at
-      ,u.id as user_id
-      ,s.id as story_id
-      ,s.title
-      ,cb.type as sales_type
-     ,min(cu.created_at) as purchased_at
+    sql: select *
+        from ${story_first_purchase_raw_data.SQL_TABLE_NAME} a
 
 
-      from mysql.gatsby.users u
+      where story_id={% parameter story_id %}
 
-      left join mysql.gatsby.coin_usages cu
-      on u.id=cu.user_id
-
-      left join mysql.gatsby.stories s
-      on cu.story_id = s.id
-
-      left join mysql.gatsby.episodes e
-      on cu.episode_id = e.id
-
-      left join
-      (select id,type
-      from mysql.gatsby.coin_balances cb
-      )cb
-      on cb.id = cu.coin_balance_id
-
-      left join mysql.gatsby.transfer_story_coin_values tscv
-      on tscv.story_id=s.id
-
-
-      where cast(u.joined_at as date)>=cast(date_add('day',-30,now()) as date)
-      and s.id={% parameter story_id %}
-      group by 1,2,3,4,5
  ;;
   }
 

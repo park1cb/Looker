@@ -32,6 +32,7 @@ view: episode_read_paid_nonpaid {
       join mysql.gatsby.users user
       on user.id=bookmark.user_id
        ;;
+    sql_trigger_value: select date_trunc('hour',now());;
   }
 
   suggestions: no
