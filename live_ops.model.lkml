@@ -119,3 +119,7 @@ explore: story_first_purchase {
 explore: episode_read_paid_nonpaid {
   persist_for: "30 minutes"
 }
+
+explore: stories {
+  persist_for: "24 hours"
+}
