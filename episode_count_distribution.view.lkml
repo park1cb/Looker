@@ -30,6 +30,11 @@ view: episode_count_distribution {
 
   dimension: user_id {
     type: number
+    link: {
+      url: "https://radish.looker.com/dashboards/53?User%20ID={{ value }}"
+      label: "User Profile"
+      icon_url: "https://res-3.cloudinary.com/crunchbase-production/image/upload/c_lpad,h_120,w_120,f_auto,b_white,q_auto:eco/v1485884030/mi3tj8fkktvfiio8rzyu.png"
+    }
     sql: ${TABLE}.user_id ;;
   }
 
@@ -55,6 +60,12 @@ view: episode_count_distribution {
   measure: payers {
     type: count_distinct
     sql: ${user_id} ;;
+    drill_fields: [user_id,paid_episode_read]
+    #link: {
+    #  url: "/dashboards/12"
+    #  label: "User Details"
+    #  icon_url: "https://res-3.cloudinary.com/crunchbase-production/image/upload/c_lpad,h_120,w_120,f_auto,b_white,q_auto:eco/v1485884030/mi3tj8fkktvfiio8rzyu.png"
+    #}
   }
 
 
