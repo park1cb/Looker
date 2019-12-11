@@ -118,3 +118,6 @@ explore: episode_read_paid_nonpaid {}
 explore: stories {}
 
 explore: story_sales_by_cohort_raw_data {}
+
+explore: episode_count_distribution {}
+explore: episode_count_distribution_raw_data {}
