@@ -1,4 +1,4 @@
-include: "story_sales_by_cohort_raw_data.view"
+#include: "story_sales_by_cohort_raw_data.view"
 
 view: story_sales_by_cohort_raw_data {
   derived_table: {
