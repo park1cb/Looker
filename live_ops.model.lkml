@@ -119,5 +119,6 @@ explore: stories {}
 
 explore: story_sales_by_cohort_raw_data {}
 
+explore: story_sales_total_coins {}
 explore: episode_count_distribution {}
 explore: episode_count_distribution_raw_data {}
