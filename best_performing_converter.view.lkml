@@ -4,7 +4,7 @@ view: best_performing_converter {
           (
           select *
           from ${best_performing_converter_raw_data.SQL_TABLE_NAME} a
-          where story_id=8602
+          where story_id={% parameter story_id %}
           )
 
 
@@ -55,10 +55,11 @@ view: best_performing_converter {
     sql: ${TABLE}.base_date_est ;;
   }
 
-  dimension: story_id {
+  parameter: story_id {
     type: number
-    sql: ${TABLE}.story_id ;;
+    default_value: "8602"
   }
+
 
   dimension: day_0 {
     type: number
