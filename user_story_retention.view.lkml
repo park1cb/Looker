@@ -9,8 +9,6 @@ view: user_story_retention {
       select *
       from mast
       where min_episode=1
-      and user_id=330
-      and story_id=7071
        ;;
   }
 
