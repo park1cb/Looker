@@ -122,3 +122,6 @@ explore: story_sales_by_cohort_raw_data {}
 explore: story_sales_total_coins {}
 explore: episode_count_distribution {}
 explore: episode_count_distribution_raw_data {}
+
+explore: best_performing_converter {}
+explore: best_performing_converter_raw_data {}
