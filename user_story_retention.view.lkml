@@ -5,6 +5,7 @@ view: user_story_retention {
       select *
       from ${user_story_retention_raw_data.SQL_TABLE_NAME}
       where story_id={% parameter story_id %}
+      order by 4
       )
 
       select *
