@@ -45,7 +45,6 @@ view: user_story_retention {
   dimension: no_ {
     type: number
     sql: ${TABLE}.no ;;
-    order_by_field: no_
   }
 
   dimension: min_episode {
