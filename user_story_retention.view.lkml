@@ -4,6 +4,7 @@ view: user_story_retention {
       (
       select *
       from ${user_story_retention_raw_data.SQL_TABLE_NAME}
+      where story_id={% parameter story_id %}
       )
 
       select *
@@ -34,10 +35,11 @@ view: user_story_retention {
     sql: ${TABLE}.user_id ;;
   }
 
-  dimension: story_id {
+  parameter: story_id {
     type: number
-    sql: ${TABLE}.story_id ;;
+    default_value: "8602"
   }
+
 
   dimension: no_ {
     type: number
