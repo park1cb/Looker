@@ -5,7 +5,7 @@ view: user_story_retention {
       select *
       from ${user_story_retention_raw_data.SQL_TABLE_NAME}
       where story_id={% parameter story_id %}
-      order by 4
+
       )
 
       select *
@@ -45,6 +45,7 @@ view: user_story_retention {
   dimension: no_ {
     type: number
     sql: ${TABLE}.no ;;
+    order_by_field: no_
   }
 
   dimension: min_episode {
@@ -55,6 +56,7 @@ view: user_story_retention {
   measure: reader {
     type: count_distinct
     sql: ${user_id} ;;
+
   }
 
 
