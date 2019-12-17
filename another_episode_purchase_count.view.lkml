@@ -36,6 +36,11 @@ view: another_episode_purchase_count {
   dimension: user_id {
     type: number
     sql: ${TABLE}.user_id ;;
+    link: {
+      url: "https://radish.looker.com/dashboards/53?User%20ID={{ value }}"
+      label: "User Profile"
+      icon_url: "https://res-3.cloudinary.com/crunchbase-production/image/upload/c_lpad,h_120,w_120,f_auto,b_white,q_auto:eco/v1485884030/mi3tj8fkktvfiio8rzyu.png"
+    }
   }
 
   dimension: paid_episode_read {
