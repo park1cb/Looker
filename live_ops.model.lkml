@@ -126,3 +126,5 @@ explore: best_performing_converter {}
 explore: user_story_retention {}
 
 explore: another_episode_purchase_count {}
+
+explore: story_waiting_time {}

@@ -3,7 +3,7 @@ view: episode_read_paid_nonpaid {
     sql: select bookmark.user_id
       ,user.joined_at
       ,bookmark.story_id
-      ,bookmark.base_dt
+      ,min(bookmark.base_dt) as base_dt
       ,epi."no"
       ,cu.coin_transaction_id
       ,cu.created_at as purchased_at
@@ -31,6 +31,7 @@ view: episode_read_paid_nonpaid {
 
       join mysql.gatsby.users user
       on user.id=bookmark.user_id
+      group by 1,2,3,5,6,7,8
        ;;
     sql_trigger_value: select date_trunc('hour',now());;
   }
