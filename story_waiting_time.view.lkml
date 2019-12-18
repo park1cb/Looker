@@ -8,7 +8,6 @@ view: story_waiting_time {
       else 'Same' end payer_type_conversion
       from ${episode_read_paid_nonpaid.SQL_TABLE_NAME} a
       where story_id={% parameter story_id %}
-      and date_diff('minute',lag(base_dt,1) over (partition by user_id,story_id order by "no"),base_dt)>=0
        ;;
   }
 
