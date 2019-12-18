@@ -94,7 +94,7 @@ view: episode_read_paid_nonpaid {
     sql: ${TABLE}.no ;;
     link: {
       url: "https://radish.looker.com/dashboards/77?Story%20Id={{ _filters['story_id']}}&Episode%20Number={{value}}"
-      label: "User Profile"
+      label: "Episode Details"
       icon_url: "https://res-3.cloudinary.com/crunchbase-production/image/upload/c_lpad,h_120,w_120,f_auto,b_white,q_auto:eco/v1485884030/mi3tj8fkktvfiio8rzyu.png"
     }
   }
