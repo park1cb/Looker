@@ -75,6 +75,7 @@ view: story_waiting_time {
   measure: reader {
     type: count_distinct
     sql: ${user_id} ;;
+
   }
 
 
