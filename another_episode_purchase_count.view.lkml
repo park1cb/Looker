@@ -16,7 +16,7 @@ view: another_episode_purchase_count {
       and coins/3>=30
       )
       and story_id<>{% parameter story_id %}
-      and coins/3>=20
+      and coins/3>=30
       and days<=10
        ;;
   }
