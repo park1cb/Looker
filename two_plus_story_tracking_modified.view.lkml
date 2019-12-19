@@ -3,7 +3,7 @@ view: two_plus_story_tracking_modified {
     sql: with filter_story as
       (
 
-      select user_id,a.story_id,epi.epi_no,cast((sum(coins)/3) as double)/cast(epi_no as double) as coins
+      select a.user_id,a.story_id,epi.epi_no,cast((sum(a.coins)/3) as double)/cast(epi_no as double) as coins
       from ${episode_count_distribution_raw_data.SQL_TABLE_NAME} a
       join
       (
@@ -12,9 +12,14 @@ view: two_plus_story_tracking_modified {
       group by 1
       )epi
       on epi.story_id=a.story_id
+
+      join mysql.gatsby.users user
+      on user.id=a.user_id
+
       where a.story_id={% parameter story_id %}
+      and date_diff('day',user.joined_at,now())>7
       group by 1,2,3
-      having cast((sum(coins)/3) as double)/cast(epi_no as double)>=.5
+      having cast((sum(a.coins)/3) as double)/cast(epi_no as double)>=.5
       )
 
       ,users as
