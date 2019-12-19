@@ -13,7 +13,7 @@ view: two_plus_story_tracking_modified {
       )epi
       on epi.story_id=a.story_id
       where a.story_id={% parameter story_id %}
-      group by 1,2
+      group by 1,2,3
       having cast((sum(coins)/3) as double)/cast(epi_no as double)>=.5
       )
 
@@ -54,7 +54,7 @@ view: two_plus_story_tracking_modified {
       from filter_story
       group by 1
       )
-      group by 1,3
+      group by 1,2,4
  ;;
   }
 
