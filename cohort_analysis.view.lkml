@@ -67,7 +67,7 @@ view: cohort_analysis {
 
   dimension: network {
     type: string
-    sql: ${TABLE}.string ;;
+    sql: ${TABLE}.network;;
   }
 
   dimension_group: used_date {
