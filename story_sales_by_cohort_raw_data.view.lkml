@@ -3,12 +3,12 @@
 view: story_sales_by_cohort_raw_data {
   derived_table: {
     sql: select cast(cu.created_at +interval '5' hour as date) as created_at
-      ,case when date_diff('day',u.joined_at,cu.created_at)=0 then 'Day 0'
-      When date_diff('day',u.joined_at,cu.created_at)>0 and date_diff('day',u.joined_at,cu.created_at)<=3 Then 'Day 1-3'
-      When date_diff('day',u.joined_at,cu.created_at)>3 and date_diff('day',u.joined_at,cu.created_at)<=7 then 'Day 4-7'
-      When date_diff('day',u.joined_at,cu.created_at)>8 and date_diff('day',u.joined_at,cu.created_at)<=15 Then 'Day 8-15'
-      when date_diff('day',u.joined_at,cu.created_at)>16 and date_diff('day',u.joined_at,cu.created_at)<=30 Then 'Day 16-30'
-      when date_diff('day',u.joined_at,cu.created_at)>30 and date_diff('day',u.joined_at,cu.created_at)<=120 then 'Day 31-120'
+      ,case when date_diff('hour',u.joined_at,cu.created_at)/24=0 then 'Day 0'
+      When date_diff('hour',u.joined_at,cu.created_at)/24>0 and date_diff('hour',u.joined_at,cu.created_at)/24<=3 Then 'Day 1-3'
+      When date_diff('hour',u.joined_at,cu.created_at)/24>3 and date_diff('hour',u.joined_at,cu.created_at)/24<=7 then 'Day 4-7'
+      When date_diff('hour',u.joined_at,cu.created_at)/24>8 and date_diff('hour',u.joined_at,cu.created_at)/24<=15 Then 'Day 8-15'
+      when date_diff('hour',u.joined_at,cu.created_at)/24>16 and date_diff('hour',u.joined_at,cu.created_at)/24<=30 Then 'Day 16-30'
+      when date_diff('hour',u.joined_at,cu.created_at)/24>30 and date_diff('hour',u.joined_at,cu.created_at)/24<=120 then 'Day 31-120'
        ELSE 'Day 121+' END as cohort
       ,cu.story_id as story_id
       ,cb.type as sales_type
