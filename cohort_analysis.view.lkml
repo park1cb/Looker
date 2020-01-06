@@ -69,13 +69,23 @@ view: cohort_analysis {
     sql: ${TABLE}.string ;;
   }
 
-  measure: sum {
-    type: sum
-    sql: ${amount} ;;
+  measure: coin_sum {
+    type: number
+    sql: sum(${amount}) ;;
   }
 
-  measure: count {
-    type: count
-    sql: ${episode_id} ;;
+  measure: coin_mean {
+    type: number
+    sql: average(${amount}) ;;
+  }
+
+  measure: user_count {
+    type: number
+    sql: count(distinct ${user_id}) ;;
+  }
+
+  measure: episode_count {
+    type: number
+    sql: count(${episode_id}) ;;
   }
 }
