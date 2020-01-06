@@ -76,7 +76,7 @@ view: cohort_analysis {
 
   measure: coin_mean {
     type: number
-    sql: average(${amount}) ;;
+    sql: avg(${amount}) ;;
   }
 
   measure: user_count {
