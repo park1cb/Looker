@@ -22,6 +22,7 @@ view: cohort_data_purchase_raw_data {
       on a.adjust_id=device.adjust_id
 
       where a.installed_date_est>=date_add('month',-3,now())
+      and date_diff('hour',a.installed_at,c.used_at)/24>=0
        ;;
     sql_trigger_value: select date_trunc('hour',now());;
   }

@@ -134,3 +134,5 @@ explore: two_plus_story_tracking {}
 explore: two_plus_story_tracking_modified {}
 
 explore: cohort_analysis {}
+
+explore: cohort_data_purchase {}
