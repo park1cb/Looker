@@ -4,7 +4,7 @@ view: episode_count_distribution_raw_data {
         cast(cu.created_at + interval '5' hour as date) as created_at
         , cu.user_id as user_id
         , cu.story_id
-        , date_diff('day',u.joined_at,cu.created_at) as days
+        , date_diff('hour',u.joined_at,cu.created_at)/24 as days
         , sum(cu.amount) as coins
 
       from mysql.gatsby.users u
