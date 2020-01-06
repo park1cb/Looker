@@ -10,6 +10,7 @@ view: cohort_data_purchase_raw_data {
       c.amount,
       c.story_id,
       c.episode_id,
+      case when c.coin_type in ('one-time','subscription') then 'Y' else 'N' end as purchased_user,
       date_diff('hour',a.installed_at,c.used_at)/24 as cohort,
       case when a.network in ('Organic','Branch(iOS)','Branch(Android)') then 'Organic' else 'Paid' end as network
 
