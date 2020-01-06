@@ -1,22 +1,46 @@
 view: cohort_analysis {
   derived_table: {
-    sql:select user_id, installed_at, used_at, amount, story_id, episode_id, concat('D',cast(cohort_ as varchar)) as cohort, network
+    sql:
+    select
+      user_id,
+      cohort,
+      network,
+      used_date,
+      sum(coin_amount) over (partition by row(user_id) order by cohort rows unbounded preceding) cumulative_coin_amount,
+      sum(episode_count) over (partition by row(user_id) order by cohort rows unbounded preceding) cumulative_episode_count
+    from (
+      select
+        user_id,
+        cohort,
+        network,
+        cast(used_at at time zone '-05:00' as date) used_date,
+        sum(amount) as coin_amount,
+        count(episode_id) as episode_count
         from (
-            select cud.user_id,
-                iaa.installed_at,
-                cud.used_at,
-                cud.amount,
-                cud.story_id,
-                cud.episode_id,
-                date_diff('hour',iaa.installed_at,cud.used_at)/24 as cohort_,
-                case when iaa.network in ('Organic','Branch(iOS)','Branch(Android)') then 'Organic' else 'Paid' end as network
-            from mart.mart.install_attribution_adjust iaa
-            left join mart.mart.coin_used_devices cud on iaa.adjust_id=cud.adjust_id
-            where {% condition date_filter %} cast(cud.used_at at time zone '-05:00' as date) {% endcondition %}
-            and {% condition date_filter %} cast(iaa.installed_at at time zone '-05:00' as date) {% endcondition %}
+          select *
+          from (
+              select cud.user_id,
+                  iaa.installed_at,
+                  cud.used_at,
+                  cud.amount,
+                  cud.story_id,
+                  cud.episode_id,
+                  date_diff('hour',iaa.installed_at,cud.used_at)/24 as cohort,
+                  case when iaa.network in ('Organic','Branch(iOS)','Branch(Android)') then 'Organic' else 'Paid' end as network
+              from mart.mart.install_attribution_adjust iaa
+              left join mart.mart.coin_used_devices cud on iaa.adjust_id=cud.adjust_id
+              where {% condition date_filter %} cud.used_at at time zone '-05:00' {% endcondition %}
+              and {% condition date_filter %} iaa.installed_at at time zone '-05:00' {% endcondition %}
+              {% if story_id._in_query %}
+              and cud.story_id = {% parameter story_id %}
+              {% else %} {% endif %}
+          )
+          where cohort >= 0
+          and cohort < 31
         )
-        where cohort_ >= 0
-        and cohort_ < 31
+        group by 1,2,3,4
+      )
+    order by 1,2,3,4
       ;;
   }
 
@@ -26,41 +50,18 @@ view: cohort_analysis {
     default_value: "7 days"
   }
 
+  parameter: story_id {
+    type: number
+  }
+
   # Define your dimensions and measures here, like this:
   dimension: user_id {
     type: number
     sql: ${TABLE}.user_id ;;
   }
 
-  dimension_group: installed_at {
-    type: time
-    timeframes: [date, week, month, year]
-    sql: ${TABLE}.installed_at ;;
-  }
-
-  dimension_group: used_at {
-    type: time
-    timeframes: [date, week, month, year]
-    sql: ${TABLE}.used_at ;;
-  }
-
-  dimension: amount {
-    type: number
-    sql: ${TABLE}.amount ;;
-  }
-
-  dimension: story_id {
-    type: number
-    sql: ${TABLE}.story_id ;;
-  }
-
-  dimension: episode_id {
-    type: number
-    sql: ${TABLE}.episode_id ;;
-  }
-
   dimension: cohort {
-    type: string
+    type: number
     sql: ${TABLE}.cohort ;;
   }
 
@@ -69,14 +70,47 @@ view: cohort_analysis {
     sql: ${TABLE}.string ;;
   }
 
-  measure: coin_sum {
-    type: number
-    sql: sum(${amount}) ;;
+  dimension_group: used_date {
+    type: time
+    timeframes: [date, week, month, year]
+    datatype: date
+    sql: ${TABLE}.used_date ;;
+    convert_tz: yes
   }
 
+  dimension: coin_amount {
+    type: number
+    sql: ${TABLE}.cumulative_coin_amount ;;
+  }
+
+  dimension: episode_count {
+    type: number
+    sql: ${TABLE}.cumulative_episode_count ;;
+  }
+
+  # measure
   measure: coin_mean {
     type: number
-    sql: avg(${amount}) ;;
+    sql: avg(${coin_amount}) ;;
+    value_format: "0.0"
+  }
+
+  measure: coin_median {
+    type: median
+    sql: ${coin_amount} ;;
+    value_format: "0.0"
+  }
+
+  measure: episodes_count_mean {
+    type: number
+    sql: avg(${episode_count}) ;;
+    value_format: "0.0"
+  }
+
+  measure: episodes_count_median {
+    type: median
+    sql: ${episode_count} ;;
+    value_format: "0.0"
   }
 
   measure: user_count {
@@ -84,8 +118,5 @@ view: cohort_analysis {
     sql: count(distinct ${user_id}) ;;
   }
 
-  measure: episode_count {
-    type: number
-    sql: count(${episode_id}) ;;
-  }
+
 }
