@@ -3,12 +3,12 @@ view: best_performing_converter_raw_data {
     sql: select
       conv.base_date_est
       ,story_id
-      ,case when date_diff('day',user.joined_at,conv.purchased_at)=0 then 'Day 0'
-            When date_diff('day',user.joined_at,conv.purchased_at)>0 and date_diff('day',user.joined_at,conv.purchased_at)<=3 Then 'Day 1-3'
-            When date_diff('day',user.joined_at,conv.purchased_at)>3 and date_diff('day',user.joined_at,conv.purchased_at)<=7 then 'Day 4-7'
-            When date_diff('day',user.joined_at,conv.purchased_at)>8 and date_diff('day',user.joined_at,conv.purchased_at)<=15 Then 'Day 8-15'
-            when date_diff('day',user.joined_at,conv.purchased_at)>16 and date_diff('day',user.joined_at,conv.purchased_at)<=30 Then 'Day 16-30'
-            when date_diff('day',user.joined_at,conv.purchased_at)>30 and date_diff('day',user.joined_at,conv.purchased_at)<=120 then 'Day 31-120'
+      ,case when date_diff('hour',user.joined_at,conv.purchased_at)/24=0 then 'Day 0'
+            When date_diff('hour',user.joined_at,conv.purchased_at)/24>0 and date_diff('hour',user.joined_at,conv.purchased_at)/24<=3 Then 'Day 1-3'
+            When date_diff('hour',user.joined_at,conv.purchased_at)/24>3 and date_diff('hour',user.joined_at,conv.purchased_at)/24<=7 then 'Day 4-7'
+            When date_diff('hour',user.joined_at,conv.purchased_at)/24>8 and date_diff('hour',user.joined_at,conv.purchased_at)/24<=15 Then 'Day 8-15'
+            when date_diff('hour',user.joined_at,conv.purchased_at)/24>16 and date_diff('hour',user.joined_at,conv.purchased_at)/24<=30 Then 'Day 16-30'
+            when date_diff('hour',user.joined_at,conv.purchased_at)/24>30 and date_diff('hour',user.joined_at,conv.purchased_at)/24<=120 then 'Day 31-120'
              ELSE 'Day 121+' END as cohort
       ,count(distinct conv.user_id) as paying_users
       ,sum(price) as amount
