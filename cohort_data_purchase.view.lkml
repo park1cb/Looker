@@ -45,6 +45,7 @@ view: cohort_data_purchase {
         PERCENT_RANK() OVER (PARTITION by a.installed_at ORDER BY b.total_amount DESC)<.8 Then 'Top 60%-80%'
         ELSE 'Top 80%-100%' end as percentile
         ,case when c.adjust_id is null then 'N' ELSE 'Y' end as multiple_stories
+        ,case when d.stories is null then 1 else d.stories end stories
       from mast a
       join
       (
@@ -75,6 +76,28 @@ view: cohort_data_purchase {
       having count(story_id)>=2
       )c
       on c.adjust_id=a.adjust_id
+
+      -----------
+      left join
+      (
+      select adjust_id,cohort,count(story_id) as stories
+      from
+      (
+      select distinct
+      adjust_id
+      ,cohort
+      ,story_id
+      from hive.looker.LR_83S5JXCB84W0BVLSECVTF_cohort_data_purchase_raw_data c
+      where purchased_user='Y'
+      group by 1,2,3
+
+
+      having sum(amount)/3>=5
+      )
+      group by 1,2
+      )d
+      on d.adjust_id=a.adjust_id
+      and d.cohort=a.cohort
 
       )
 
@@ -185,7 +208,12 @@ view: cohort_data_purchase {
     sql: ${TABLE}.episode_purchase ;;
   }
 
+  dimension: stories {
+    type: number
+    sql: ${TABLE}.stories ;;
+  }
 
+######################
 
 
 
@@ -198,6 +226,19 @@ view: cohort_data_purchase {
   measure: median_episode_purchase {
     type: median
     sql: ${episode_purchase} ;;
+    value_format_name: decimal_2
+  }
+
+
+  measure: avg_story_read {
+    type: average
+    sql: ${stories} ;;
+    value_format_name: decimal_2
+  }
+
+  measure: median_story_read {
+    type: median
+    sql: ${stories} ;;
     value_format_name: decimal_2
   }
 
