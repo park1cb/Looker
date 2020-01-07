@@ -45,7 +45,7 @@ view: cohort_data_purchase {
         PERCENT_RANK() OVER (PARTITION by a.installed_at ORDER BY b.total_amount DESC)<.8 Then 'Top 60%-80%'
         ELSE 'Top 80%-100%' end as percentile
         ,case when c.adjust_id is null then 'N' ELSE 'Y' end as multiple_stories
-        ,case when d.stories is null then 1 else d.stories end stories
+        ,case when d.stories is null then 0 else d.stories end stories
       from mast a
       join
       (
