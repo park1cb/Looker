@@ -92,7 +92,7 @@ view: cohort_data_purchase {
       group by 1,2,3
 
 
-      having sum(amount)/3>=5
+      having sum(amount)/3>=1
       )
       group by 1,2
       )d
