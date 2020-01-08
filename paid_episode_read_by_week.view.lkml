@@ -8,11 +8,11 @@ date_trunc('week',users.installed_at) as date
 ,users.organic_users+users.paid_users as new_users
 ,Case
 when {% parameter network_filter %}='Organic' Then
-  COALESCE(element_at(kr,'Organic'),0) /COALESCE(users.organic_users,0)
+  COALESCE(element_at(kr,'Organic'),0) /nullif(COALESCE(users.organic_users,0),0)
 when {% parameter network_filter %}='Paid' Then
-  COALESCE(element_at(kr,'Paid'),0) /COALESCE(users.paid_users,0)
+  COALESCE(element_at(kr,'Paid'),0) /nullif(COALESCE(users.paid_users,0),0)
 when {% parameter network_filter %}='Everything' then
-( COALESCE(element_at(kr,'Organic'),0) +  COALESCE(element_at(kr,'Paid'),0))/( COALESCE(users.organic_users,0)+ COALESCE(users.paid_users,0))
+( COALESCE(element_at(kr,'Organic'),0) +  COALESCE(element_at(kr,'Paid'),0))/nullif(( COALESCE(users.organic_users,0)+ COALESCE(users.paid_users,0)),0)
 End as Value
 from
 (
@@ -27,10 +27,38 @@ from
   ,map_agg(network,new_users)  as kv
   from
   (
-   select cast(installed_at+ interval '5' hour as date) as installed_at,network,count(distinct adjust_id) new_users
+   select cast(a.installed_at+ interval '5' hour as date) as installed_at,network,count(distinct a.adjust_id) new_users
    from  ${cohort_data_purchase_raw_data.SQL_TABLE_NAME} a
-   where purchased_user='Y'
+   join
+   (
+      select adjust_id
+      ,cast(installed_at+interval '5' hour as date) as installed_at
+      ,sum(amount) as amount
+      , CASE WHEN
+          PERCENT_RANK() OVER (PARTITION by cast(installed_at+interval '5' hour as date)  ORDER BY sum(amount) DESC)<.1 Then 'Top 10%'
+          WHEN
+          PERCENT_RANK() OVER (PARTITION by cast(installed_at+interval '5' hour as date)  ORDER BY sum(amount) DESC)<.2 Then 'Top 10%-20%'
+          WHEN
+          PERCENT_RANK() OVER (PARTITION by cast(installed_at+interval '5' hour as date)  ORDER BY sum(amount) DESC)<.4 Then 'Top 20%-40%'
+          WHEN
+          PERCENT_RANK() OVER (PARTITION by cast(installed_at+interval '5' hour as date)  ORDER BY sum(amount) DESC)<.6 Then 'Top 40-60%'
+          WHEN
+          PERCENT_RANK() OVER (PARTITION by cast(installed_at+interval '5' hour as date)  ORDER BY sum(amount) DESC)<.8 Then 'Top 60%-80%'
+          ELSE 'Top 80%-100%' end as percentile
+      from ${cohort_data_purchase_raw_data.SQL_TABLE_NAME}
+      group by 1,2
+    )b
+    on a.adjust_id=b.adjust_id
 
+   where purchased_user='Y'
+      {% if percentile._in_query %}
+      and
+      percentile = {% parameter percentile %}
+      {% else %} {% endif %}
+--------------------------------------
+   --and cohort=0
+   --and story_id=8602
+----------------------------------------
    group by 1,2
 
   )
@@ -48,9 +76,37 @@ left join
   ,map_agg(network,episode_read) as kr
   from
   (
-    select cast(installed_at+ interval '5' hour as date) installed_at,platform,purchased_user,network,cohort as day,sum(amount)/3 as episode_read
-    from ${cohort_data_purchase_raw_data.SQL_TABLE_NAME}
+    select cast(a.installed_at+ interval '5' hour as date) installed_at,platform,purchased_user,network,cohort as day,sum(a.amount)/3 as episode_read
+    from ${cohort_data_purchase_raw_data.SQL_TABLE_NAME} a
+    join
+    (
+      select adjust_id
+      ,cast(installed_at+interval '5' hour as date) as installed_at
+      ,sum(amount) as amount
+      , CASE WHEN
+          PERCENT_RANK() OVER (PARTITION by cast(installed_at+interval '5' hour as date)  ORDER BY sum(amount) DESC)<.1 Then 'Top 10%'
+          WHEN
+          PERCENT_RANK() OVER (PARTITION by cast(installed_at+interval '5' hour as date)  ORDER BY sum(amount) DESC)<.2 Then 'Top 10%-20%'
+          WHEN
+          PERCENT_RANK() OVER (PARTITION by cast(installed_at+interval '5' hour as date)  ORDER BY sum(amount) DESC)<.4 Then 'Top 20%-40%'
+          WHEN
+          PERCENT_RANK() OVER (PARTITION by cast(installed_at+interval '5' hour as date)  ORDER BY sum(amount) DESC)<.6 Then 'Top 40-60%'
+          WHEN
+          PERCENT_RANK() OVER (PARTITION by cast(installed_at+interval '5' hour as date)  ORDER BY sum(amount) DESC)<.8 Then 'Top 60%-80%'
+          ELSE 'Top 80%-100%' end as percentile
+      from ${cohort_data_purchase_raw_data.SQL_TABLE_NAME}
+      group by 1,2
+    )b
+    on a.adjust_id=b.adjust_id
     where purchased_user='Y'
+      {% if percentile._in_query %}
+      and
+      percentile = {% parameter percentile %}
+      {% else %} {% endif %}
+
+---------------------------
+    --and story_id=8602
+---------------------------
     group by 1,2,3,4,5
   )
   group by 1,2
@@ -138,10 +194,22 @@ where day>=0
 
   parameter: network_filter{
     type: string
-    allowed_value: { value: "Organic"}
-    allowed_value: { value: "Paid" }
     allowed_value: { value: "Everything" }
+    allowed_value: { value: "Paid" }
+    allowed_value: { value: "Organic"}
   }
+
+  parameter: percentile {
+    type: string
+    allowed_value: { label: "Everything" value: "" }
+    allowed_value: { label: "Top 10%" value: "Top 10%" }
+    allowed_value: { label: "Top 10%-20%" value: "Top 10%-20%" }
+    allowed_value: { label: "Top 20%-40%" value: "Top 10%-20%" }
+    allowed_value: { label: "Top 40%-60%" value: "Top 10%-20%" }
+    allowed_value: { label: "Top 60%-80%" value: "Top 10%-20%" }
+    allowed_value: { label: "Top 80%-100%" value: "Top 80%-100%" }
+  }
+  #########################
 
 
   dimension: day {
@@ -261,7 +329,7 @@ where day>=0
     type: number
     sql: case when ${running_week8} = ${running_week8_prev_day} then null
       else ${running_week8} end ;;
-    value_format_name: usd
+    value_format_name: decimal_2
     hidden: yes
   }
 
@@ -269,7 +337,7 @@ where day>=0
     type: number
     sql: case when ${running_week7} = ${running_week7_prev_day} then null
       else ${running_week7} end ;;
-    value_format_name: usd
+    value_format_name: decimal_2
     hidden: yes
   }
 
@@ -277,7 +345,7 @@ where day>=0
     type: number
     sql: case when ${running_week6} = ${running_week6_prev_day} then null
       else ${running_week6} end ;;
-    value_format_name: usd
+    value_format_name: decimal_2
     hidden: yes
   }
 
@@ -285,7 +353,7 @@ where day>=0
     type: number
     sql: case when ${running_week5} = ${running_week5_prev_day} then null
       else ${running_week5} end ;;
-    value_format_name: usd
+    value_format_name: decimal_2
     hidden: yes
   }
 
@@ -293,7 +361,7 @@ where day>=0
     type: number
     sql: case when ${running_week4} = ${running_week4_prev_day} then null
       else ${running_week4} end ;;
-    value_format_name: usd
+    value_format_name: decimal_2
     hidden: yes
   }
 
@@ -301,7 +369,7 @@ where day>=0
     type: number
     sql: case when ${running_week3} = ${running_week3_prev_day} then null
       else ${running_week3} end ;;
-    value_format_name: usd
+    value_format_name: decimal_2
     hidden: yes
   }
 
@@ -309,7 +377,7 @@ where day>=0
     type: number
     sql: case when ${running_week2} = ${running_week2_prev_day} then null
       else ${running_week2} end ;;
-    value_format_name: usd
+    value_format_name: decimal_2
     hidden: yes
   }
 
@@ -317,7 +385,7 @@ where day>=0
     type: number
     sql: case when ${running_week1} = ${running_week1_prev_day} then null
       else ${running_week1} end ;;
-    value_format_name: usd
+    value_format_name: decimal_2
     hidden: yes
   }
 
@@ -325,7 +393,7 @@ where day>=0
     type: number
     sql: case when ${running_week0} = ${running_week0_prev_day} then null
       else ${running_week0} end ;;
-    value_format_name: usd
+    value_format_name: decimal_2
     hidden: yes
   }
 
@@ -333,14 +401,14 @@ where day>=0
     type: average
     label: "Week 0"
     sql: ${running_week0_formatted} ;;
-    value_format: "$#0.####"
+    value_format: "#0.##"
   }
 
   measure: week1 {
     type: average
     label: "Week 1"
     sql: ${running_week1_formatted} ;;
-    value_format: "$#0.####"
+    value_format: "#0.##"
   }
 
 
@@ -348,49 +416,49 @@ where day>=0
     type: average
     label: "Week 2"
     sql: ${running_week2_formatted} ;;
-    value_format: "$#0.####"
+    value_format: "#0.##"
   }
 
   measure: week3 {
     type: average
     label: "Week 3"
     sql: ${running_week3_formatted} ;;
-    value_format: "$#0.####"
+    value_format: "#0.##"
   }
 
   measure: week4 {
     type: average
     label: "Week 4"
     sql: ${running_week4_formatted} ;;
-    value_format: "$#0.####"
+    value_format: "#0.##"
   }
 
   measure: week5 {
     type: average
     label: "Week 5"
     sql: ${running_week5_formatted} ;;
-    value_format: "$#0.####"
+    value_format: "#0.##"
   }
 
   measure: week6 {
     type: average
     label: "Week 6"
     sql: ${running_week6_formatted} ;;
-    value_format: "$#0.####"
+    value_format: "#0.##"
   }
 
   measure: week7 {
     type: average
     label: "Week 7"
     sql: ${running_week7_formatted} ;;
-    value_format: "$#0.####"
+    value_format: "#0.##"
   }
 
   measure: week8 {
     type: average
     label: "Week 8"
     sql: ${running_week8_formatted} ;;
-    value_format: "$#0.####"
+    value_format: "#0.##"
   }
 
   set: detail {
