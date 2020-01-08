@@ -136,3 +136,5 @@ explore: two_plus_story_tracking_modified {}
 explore: cohort_analysis {}
 
 explore: cohort_data_purchase {}
+
+explore: paid_episode_read_by_week {}
