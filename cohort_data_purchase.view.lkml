@@ -40,7 +40,7 @@ view: cohort_data_purchase {
         WHEN
         PERCENT_RANK() OVER (PARTITION by a.installed_at ORDER BY b.total_amount DESC)<.4 Then 'Top 20%-40%'
         WHEN
-        PERCENT_RANK() OVER (PARTITION by a.installed_at ORDER BY b.total_amount DESC)<.6 Then 'Top 40-60%'
+        PERCENT_RANK() OVER (PARTITION by a.installed_at ORDER BY b.total_amount DESC)<.6 Then 'Top 40%-60%'
         WHEN
         PERCENT_RANK() OVER (PARTITION by a.installed_at ORDER BY b.total_amount DESC)<.8 Then 'Top 60%-80%'
         ELSE 'Top 80%-100%' end as percentile
@@ -148,9 +148,9 @@ view: cohort_data_purchase {
     allowed_value: { label: "Everything" value: "" }
     allowed_value: { label: "Top 10%" value: "Top 10%" }
     allowed_value: { label: "Top 10%-20%" value: "Top 10%-20%" }
-    allowed_value: { label: "Top 20%-40%" value: "Top 10%-20%" }
-    allowed_value: { label: "Top 40%-60%" value: "Top 10%-20%" }
-    allowed_value: { label: "Top 60%-80%" value: "Top 10%-20%" }
+    allowed_value: { label: "Top 20%-40%" value: "Top 20%-40%" }
+    allowed_value: { label: "Top 40%-60%" value: "Top 40%-60%" }
+    allowed_value: { label: "Top 60%-80%" value: "Top 60%-80%" }
     allowed_value: { label: "Top 80%-100%" value: "Top 80%-100%" }
   }
 
