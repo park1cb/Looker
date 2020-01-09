@@ -138,3 +138,5 @@ explore: cohort_analysis {}
 explore: cohort_data_purchase {}
 
 explore: paid_episode_read_by_week {}
+
+explore: actual_story_read_by_week {}
