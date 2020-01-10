@@ -8,11 +8,11 @@ date_trunc('week',users.installed_at) as date
 ,users.organic_users+users.paid_users as new_users
 ,Case
 when {% parameter network_filter %}='Organic' Then
-  COALESCE(element_at(kr,'Organic'),0) /nullif(COALESCE(users.organic_users,0),0)
+  cast(COALESCE(element_at(kr,'Organic'),0) as double) /cast(nullif(COALESCE(users.organic_users,0),0) as double)
 when {% parameter network_filter %}='Paid' Then
-  COALESCE(element_at(kr,'Paid'),0) /nullif(COALESCE(users.paid_users,0),0)
+  cast(COALESCE(element_at(kr,'Paid'),0) as double) /cast(nullif(COALESCE(users.paid_users,0),0) as double)
 when {% parameter network_filter %}='Everything' then
-( COALESCE(element_at(kr,'Organic'),0) +  COALESCE(element_at(kr,'Paid'),0))/nullif(( COALESCE(users.organic_users,0)+ COALESCE(users.paid_users,0)),0)
+cast(( COALESCE(element_at(kr,'Organic'),0) +  COALESCE(element_at(kr,'Paid'),0)) as double)/cast(nullif(( COALESCE(users.organic_users,0)+ COALESCE(users.paid_users,0)),0) as double)
 End as Value
 from
 (
