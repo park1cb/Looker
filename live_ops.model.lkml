@@ -142,3 +142,5 @@ explore: paid_episode_read_by_week {}
 explore: actual_story_read_by_week {}
 
 explore: paid_episode_read_by_week__denomiator_installed_device_ {}
+
+explore: actual_stroy_read_install_bases_by_week {}
