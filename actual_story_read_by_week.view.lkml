@@ -6,14 +6,8 @@ select
 date_trunc('week',users.installed_at) as date
 ,day
 ,users.organic_users+users.paid_users as new_users
-,Case
-when {% parameter network_filter %}='Organic' Then
-  cast(COALESCE(element_at(kr,'Organic'),0) as double)/cast(nullif(COALESCE(users.organic_users,0),0) as double)
-when {% parameter network_filter %}='Paid' Then
-  COALESCE(element_at(kr,'Paid'),0) /nullif(COALESCE(users.paid_users,0),0)
-when {% parameter network_filter %}='Everything' then
-cast(( COALESCE(element_at(kr,'Organic'),0) +  COALESCE(element_at(kr,'Paid'),0)) as double)/cast(nullif(( COALESCE(users.organic_users,0)+ COALESCE(users.paid_users,0)),0) as double)
-End as Value
+,cast(actual_story_read as double)/cast(nullif(( COALESCE(users.organic_users,0)+ COALESCE(users.paid_users,0)),0) as double)
+ as Value
 from
 (
 select
@@ -73,14 +67,43 @@ left join
   select
   installed_at
   ,day
-  ,map_agg(network,actual_story_read) as kr
+  ,network
+  ,sum(actual_story_read) as actual_story_read
   from
   (
-select installed_at,platform,purchased_user,network,day,count(distinct adjust_id) as actual_story_read
-from
-(
+
+
+    select distinct
+    cast(a.installed_at+interval '5' hour as date) as installed_at
+    ,a.adjust_id
+    ,cohort as day
+    ,a.story_id
+    ,a.network
+    --,case when cohort>=actual_read_day then 1 else 0 end as actual_story_read
+    ,case when actual_read_day is not null then 1 else 0 end as actual_story_read
+    from ${cohort_data_purchase_raw_data.SQL_TABLE_NAME} a
+
+    left join
+    (
+    select installed_at,adjust_id,platform,purchased_user,network,story_id,min(day) as actual_read_day
+    from
+    (
+    select *,sum(episode_reads) over(PARTITION BY adjust_id,story_id ORDER BY day ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS cumulative_read
+    from
+    (
     select cast(a.installed_at+ interval '5' hour as date) installed_at,a.adjust_id,platform,purchased_user,network,cohort as day,story_id,sum(a.amount)/3 as episode_reads
     from ${cohort_data_purchase_raw_data.SQL_TABLE_NAME} a
+
+    where purchased_user='Y'
+    group by 1,2,3,4,5,6,7
+    )
+    )
+    where cumulative_read>=10
+    group by 1,2,3,4,5,6
+    )actual_read
+    on actual_read.adjust_id=a.adjust_id
+    and actual_read.story_id=a.story_id
+
     join
     (
       select adjust_id
@@ -101,17 +124,14 @@ from
       group by 1,2
     )b
     on a.adjust_id=b.adjust_id
-    where purchased_user='Y'
-          {% if percentile._in_query %}
-      and
-      percentile = {% parameter percentile %}
-      {% else %} {% endif %}
-    group by 1,2,3,4,5,6,7
-    having sum(a.amount)/3>=5
+
+    where a.purchased_user='Y'
+    {% if percentile._in_query %}
+    and
+    percentile = {% parameter percentile %}
+    {% else %} {% endif %}
 )
-group by 1,2,3,4,5
-)
-group by 1,2
+group by 1,2,3
 )story_read
 on users.installed_at=story_read.installed_at
 where day>=0
@@ -192,12 +212,7 @@ where day>=0
       drill_fields: [detail*]
     }
 
-    parameter: network_filter{
-      type: string
-      allowed_value: { value: "Everything" }
-      allowed_value: { value: "Paid" }
-      allowed_value: { value: "Organic"}
-    }
+
 
     parameter: percentile {
       type: string
