@@ -9,6 +9,7 @@ view: cohort_data_purchase_raw_data {
       c.used_at,
       c.amount,
       c.story_id,
+      s.title,
       c.episode_id,
       case when c.coin_type in ('one-time','subscription') then 'Y' else 'N' end as purchased_user,
       date_diff('hour',a.installed_at,c.used_at)/24 as cohort,
@@ -21,6 +22,9 @@ view: cohort_data_purchase_raw_data {
 
       join mysql.gatsby.user_devices device
       on a.adjust_id=device.adjust_id
+
+      join mysql.gatsby.stories s
+      on s.id=c.story_id
 
       where a.installed_date_est>=date_add('month',-9,now())
       and date_diff('hour',a.installed_at,c.used_at)/24>=0
