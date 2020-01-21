@@ -11,6 +11,7 @@ datagroup: live_ops_default_datagroup {
 persist_with: live_ops_default_datagroup
 
 
+explore: session_time_analysis {}
 
 explore: Paying_Conversion {}
 
