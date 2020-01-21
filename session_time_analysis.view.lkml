@@ -3,13 +3,13 @@ view: session_time_analysis {
   derived_table: {
     sql:
     select
-        base_date_est,
+        base_date,
         amplitude_id,
         session_id,
         date_diff('second',min(base_dt),max(base_dt)) as time_diff
     from hive.dw.dw_amplitude_est
-    where base_date_est >= {% date_start date_filter %}
-      and base_date_est <= {% date_end date_filter %}
+    where base_date >= {% date_start date_filter %}
+      and base_date <= {% date_end date_filter %}
       and session_id <> -1
     group by 1,2,3
     order by 1,2,3
@@ -23,14 +23,15 @@ view: session_time_analysis {
   dimension_group: base_date_est {
     type: time
     timeframes: [date, week, month, year]
-    sql: ${TABLE}.base_date_est ;;
+    convert_tz: no
+    sql: ${TABLE}.base_date ;;
   }
   dimension: amplitude_id {
-    type: number
+    type: string
     sql: ${TABLE}.amplitude_id ;;
   }
   dimension: session_id {
-    type: number
+    type: string
     sql: ${TABLE}.session_id ;;
   }
   dimension: time_diff{
