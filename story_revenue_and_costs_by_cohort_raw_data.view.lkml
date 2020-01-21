@@ -133,9 +133,11 @@ view: story_revenue_and_costs_by_cohort_raw_data {
   }
 
   measure: episode_count {
-    type: count_distinct
-    sql: ${episode_id} ;;
+    type: number
+    sql: count(${episode_id}) ;;
   }
+
+
 
 
 }
