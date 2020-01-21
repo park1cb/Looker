@@ -132,5 +132,10 @@ view: story_revenue_and_costs_by_cohort_raw_data {
     value_format_name: usd
   }
 
+  measure: episode_count {
+    type: count_distinct
+    sql: ${episode_id} ;;
+  }
+
 
 }
