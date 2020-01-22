@@ -149,3 +149,5 @@ explore: actual_stroy_read_install_bases_by_week {}
 explore: cumulative_story_read {}
 
 explore: story_revenue_and_costs_by_cohort_raw_data {}
+
+explore: user_unique_episode_read_date_time_raw_data {}

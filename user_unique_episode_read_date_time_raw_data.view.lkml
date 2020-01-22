@@ -1,4 +1,4 @@
-view: user_unique_episode_read_date_time {
+view: user_unique_episode_read_date_time_raw_data {
   derived_table: {
     sql: select story_id,user_id,episode_id,min(base_dt) as first_read_date
       from hive.dw.dw_bookmark
