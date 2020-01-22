@@ -103,7 +103,7 @@ view: story_episode_read_type {
 
   dimension: hour_group {
     type: tier
-    tiers: [0,1,4,6,8,12,24]
+    tiers: [2,5,7,9,13,25]
     style: integer
     sql: ${hour} ;;
 
