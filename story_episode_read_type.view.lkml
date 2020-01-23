@@ -111,6 +111,10 @@ view: story_episode_read_type {
 
   measure: user_count {
     type: count_distinct
+    link: {
+      url: "https://radish.looker.com/dashboards/92?Story%20id={{ value }}&Episode%20Id={{ value }}"
+      icon_url: "https://res-3.cloudinary.com/crunchbase-production/image/upload/c_lpad,h_120,w_120,f_auto,b_white,q_auto:eco/v1485884030/mi3tj8fkktvfiio8rzyu.png"
+    }
     sql: ${user_id} ;;
   }
 
