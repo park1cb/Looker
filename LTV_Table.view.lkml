@@ -57,9 +57,9 @@ from
     group by 1,2
   )
   group by 1
-)
+)users
 
-) users
+
 
 
 left join
