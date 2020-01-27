@@ -78,7 +78,7 @@ left join
     select
     cast(a.joined_at as date) as date
     ,case when network.network_name='Organic' or network.network_name is null then 'Organic' else 'Paid' End as network
-    ,date_diff('day',a.joined_at,paid.created_at) as day
+    ,date_diff('hour',a.joined_at,paid.created_at)/24 as day
     ,sum(pd.original_price) as revenue
     from mysql.gatsby.users a
     left join mysql.gatsby.pre_signin_users b
