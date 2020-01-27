@@ -17,12 +17,6 @@ COALESCE((COALESCE(element_at(kr,'Organic'),0) +  COALESCE(element_at(kr,'Paid')
 End as Value
 from
 (
-select
-date
-,element_at(kv,'Organic') as Organic_Users
-,element_at(kv,'Paid') as Paid_Users
-from
-(
   select
   date
   ,map_agg(network,new_users)  as kv
