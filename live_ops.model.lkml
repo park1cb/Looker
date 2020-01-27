@@ -159,3 +159,5 @@ explore: ltv_table_week_device {}
 explore: ltv_table_device {}
 
 explore: ltv_version_2_by_installed_date {}
+
+explore: organic_vs_paid_installs {}
