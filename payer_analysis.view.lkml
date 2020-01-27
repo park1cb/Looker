@@ -19,7 +19,7 @@ view: payer_analysis {
         , cu.amount as coins
         , cu.coin_balance_id
         , tscv.value as writer_payout
-        , date_diff('day',u.joined_at,cu.created_at) as days
+        , date_diff('hour',u.joined_at,cu.created_at)/24 as days
       from mysql.gatsby.users u
 
       left join mysql.gatsby.coin_usages cu
