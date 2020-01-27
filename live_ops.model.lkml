@@ -154,4 +154,6 @@ explore: user_episode_read_dt_raw_data{}
 
 explore: story_episode_read_type {}
 
+explore: ltv_table_week_device {}
+
 explore: ltv_version_2_by_installed_date {}
