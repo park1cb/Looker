@@ -1,20 +1,15 @@
 view: ltv_final {
   derived_table: {
-    sql:with LTV as
+    sql: with LTV as
             (
 select
 date_format(date_trunc('Month',users.date),'%Y-%m') as date
 
 ,day
-,users.organic_users+users.paid_users as new_users
-,Case
-when {% parameter network_filter %}='Organic' Then
-  COALESCE(COALESCE(element_at(kr,'Organic'),0) /COALESCE(users.organic_users,0),0)
-when {% parameter network_filter %}='Paid' Then
-  COALESCE(COALESCE(element_at(kr,'Paid'),0) /COALESCE(users.paid_users,0),0)
-when {% parameter network_filter %}='Everything' then
-COALESCE((COALESCE(element_at(kr,'Organic'),0) +  COALESCE(element_at(kr,'Paid'),0))/( COALESCE(users.organic_users,0)+ COALESCE(users.paid_users,0)),0)
-End as Value
+,element_at(kv,'Organic')+element_at(kv,'Paid') as new_users
+,
+COALESCE((COALESCE(element_at(kr,'Organic'),0) +  COALESCE(element_at(kr,'Paid'),0))/( COALESCE(element_at(kv,'Organic'),0)+ COALESCE(element_at(kv,'Paid'),0)),0)
+as Value
 from
 (
   select
@@ -58,6 +53,9 @@ from
   )
   group by 1
 )users
+
+
+
 
 
 
