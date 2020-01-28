@@ -203,7 +203,7 @@ view: payer_analysis {
   dimension: writer_payout {
     type: number
     sql: ${TABLE}.writer_payout ;;
-    value_format_name: usd
+    value_format: "$0.00000"
   }
 
   dimension: high_margin_story_flag {
