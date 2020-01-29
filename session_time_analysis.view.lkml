@@ -27,11 +27,17 @@ view: session_time_analysis {
     )
     select
       base_date,
-      amplitude_id,
-      session_count,
-      session_duration,
-      case when session_duration < 1 then True else False end as under_one_min
+      count(distinct amplitude_id) as user_count,
+      sum(session_count) as total_session_count,
+      sum(session_duration) as total_session_duration,
+      average(session_count) as mean_session_count,
+      average(session_duration) as mean_session_duration,
+      approx_percentile(session_count,0.50) as median_session_count,
+      approx_percentile(session_duration,0.50) as median_session_duration
     from tt
+    group by 1
+    order by 1,2
+
       ;;
   }
 
@@ -46,56 +52,75 @@ view: session_time_analysis {
     sql: ${TABLE}.base_date ;;
     convert_tz: no
   }
-  dimension: amplitude_id {
-    type: string
-    sql: ${TABLE}.amplitude_id ;;
-  }
-  dimension: session_count {
+  dimension: user_count {
     type: number
-    sql: ${TABLE}.session_count ;;
+    sql: ${TABLE}.user_count ;;
   }
-  dimension: session_duration {
+  dimension: _total_session_count {
+    type: number
+    sql: ${TABLE}.total_session_count ;;
+  }
+  dimension: _total_session_duration {
     type: number
     value_format: "0.00"
-    sql: ${TABLE}.session_duration ;;
+    sql: ${TABLE}.total_session_duration ;;
   }
-  dimension: session_time_tier {
-    type: tier
-    value_format: "0"
-#     tiers: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180]
-    tiers: [0, 1,2,3,4,5,6,7,8,9,10]
-    style: interval
-    sql: ${session_duration} ;;
+  dimension: _mean_session_count {
+    type: number
+    sql: ${TABLE}.mean_session_count ;;
   }
-  dimension: under_one_min {
-    type: yesno
-    sql: ${TABLE}.under_one_min ;;
+  dimension: _mean_session_duration {
+    type: number
+    value_format: "0.00"
+    sql: ${TABLE}.mean_session_duration ;;
   }
+  dimension: _median_session_count {
+    type: number
+    sql: ${TABLE}.median_session_count ;;
+  }
+  dimension: _median_session_duration {
+    type: number
+    value_format: "0.00"
+    sql: ${TABLE}.median_session_duration ;;
+  }
+#   dimension: session_time_tier {
+#     type: tier
+#     value_format: "0"
+# #     tiers: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180]
+#     tiers: [0, 1,2,3,4,5,6,7,8,9,10]
+#     style: interval
+#     sql: ${session_duration} ;;
+#   }
+#   dimension: under_one_min {
+#     type: yesno
+#     sql: ${TABLE}.under_one_min ;;
+#   }
 
-  measure: total_session_duration {
+  measure: total_session_counts {
     type: number
     value_format: "0.00"
-    sql: sum(${session_duration}) ;;
+    sql: ${_total_session_count} ;;
   }
-  measure: total_session_duration_over_one_min {
+  measure: total_session_minute {
+    type: number
+    sql: ${_total_session_duration};;
+  }
+  measure: mean_session_counts {
     type: number
     value_format: "0.00"
-    sql: sum(case when ${under_one_min} = False then ${session_duration} else null end) ;;
+    sql: ${_mean_session_count} ;;
   }
-  measure: total_session_count {
+  measure: mean_session_minute {
     type: number
-    sql: sum(${session_count}) ;;
+    sql: ${_mean_session_duration};;
   }
-  measure: total_session_count_over_one_min {
+  measure: median_session_counts {
     type: number
-    sql: sum(case when ${under_one_min} = False then ${session_count} else null end) ;;
+    value_format: "0.00"
+    sql: ${_median_session_count} ;;
   }
-  measure: user_count {
+  measure: median_session_minute {
     type: number
-    sql:count(distinct ${amplitude_id}) ;;
-  }
-  measure: user_count_over_one_min {
-    type: number
-    sql:count(distinct case when ${under_one_min} = False then ${amplitude_id} else null end) ;;
+    sql: ${_median_session_duration};;
   }
 }
