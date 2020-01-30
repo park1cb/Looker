@@ -53,5 +53,10 @@ view: user_episode_read_dt_raw_data {
     sql: ${TABLE}.episode_published_at ;;
   }
 
+  measure: total_users {
+    type: count_distinct
+    sql: ${user_id} ;;
+  }
+
 
 }
