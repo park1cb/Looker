@@ -147,9 +147,10 @@ view: paid_episode_read_by_installs_day {
     sql: ${TABLE}.Value ;;
   }
 
-  measure: total_value {
+  measure: episode_read {
     type: sum
     sql: ${value} ;;
+    value_format_name: decimal_2
   }
 
 }
