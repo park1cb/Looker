@@ -31,9 +31,9 @@ view: paid_episode_read_by_installs_day {
 
         from mart.mart.user_mapper_adjust a
         ------------------------------------
-         --and cohort=0
-         --and story_id=8602
-      ----------------------------------------
+
+        ------------------------------------
+
          group by 1,2
 
         )
@@ -81,7 +81,7 @@ view: paid_episode_read_by_installs_day {
           {% else %} {% endif %}
 
       ---------------------------
-          --and story_id=8602
+
       ---------------------------
           group by 1,2,3,4,5
         )
@@ -96,6 +96,12 @@ view: paid_episode_read_by_installs_day {
   }
 
   suggestions: no
+
+  #parameter: story_id {
+  #  type: number
+  #  default_value: "8602"
+  #}
+
 
   parameter: network_filter{
     type: string
