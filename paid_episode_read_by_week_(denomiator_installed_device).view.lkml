@@ -27,11 +27,11 @@ from
   ,map_agg(network,new_installed_users)  as kv
   from
   (
-   select cast(installed_at + interval '5' hour as date) as installed_at
-  ,case when network_name in ('Organic','Branch(iOS)','Branch(Android)') then 'Organic' else 'Paid' end as network
-  ,count(adid) as new_installed_users
+    select cast(installed_at + interval '5' hour as date) as installed_at
+    ,case when network in ('Organic','Branch(iOS)','Branch(Android)') then 'Organic' else 'Paid' end as network
+    ,count(adjust_id) as new_installed_users
 
-  from mart.mart.user_mapper_adjust a
+    from mart.mart.install_attribution_adjust a
   ------------------------------------
    --and cohort=0
    --and story_id=8602

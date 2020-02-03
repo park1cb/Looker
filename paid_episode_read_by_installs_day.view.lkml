@@ -26,10 +26,10 @@ view: paid_episode_read_by_installs_day {
         from
         (
          select cast(installed_at + interval '5' hour as date) as installed_at
-        ,case when network_name in ('Organic','Branch(iOS)','Branch(Android)') then 'Organic' else 'Paid' end as network
-        ,count(adid) as new_installed_users
+        ,case when network in ('Organic','Branch(iOS)','Branch(Android)') then 'Organic' else 'Paid' end as network
+        ,count(adjust_id) as new_installed_users
 
-        from mart.mart.user_mapper_adjust a
+        from mart.mart.install_attribution_adjust a
         ------------------------------------
 
         ------------------------------------
@@ -133,7 +133,7 @@ view: paid_episode_read_by_installs_day {
       quarter,
       year
     ]
-    convert_tz: yes
+    convert_tz: no
     datatype: date
     sql: ${TABLE}."date" ;;
   }

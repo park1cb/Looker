@@ -163,3 +163,17 @@ explore: ltv_version_2_by_installed_date {}
 explore: organic_vs_paid_installs {}
 
 explore: paid_episode_read_by_installs_day {}
+
+explore: paid_episode_read_per_paying_users {}
+
+explore: paying_conversion_by_days {}
+
+explore: episode_purchased_per_story_starter {}
+
+explore: high_margin_story_sales {}
+
+explore: active_users_user_level {}
+
+explore: active_users_base_date {}
+
+explore: re_engaged_users_comeback_after_15_days {}
