@@ -19,7 +19,7 @@ view: kpi_by_week {
     ]
     convert_tz: no
     datatype: date
-    sql: ${TABLE}.base_date_est ;;
+    sql: date_add('day',1,${TABLE}.base_date_est) ;;
   }
 
   dimension: coin_used_users {
@@ -82,8 +82,10 @@ view: kpi_by_week {
     sql: ${TABLE}.viewed_stories ;;
   }
 
-  measure: count {
-    type: count
-    drill_fields: []
+  measure: weekly_active_users {
+    type: average
+    sql: ${active_users} ;;
   }
+
+
 }

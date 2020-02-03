@@ -176,4 +176,13 @@ explore: active_users_user_level {}
 
 explore: active_users_base_date {}
 
-explore: re_engaged_users_comeback_after_15_days {}
+explore: kpi_by_week {}
+
+explore: re_engaged_users_comeback_after_15_days {
+  join: kpi_by_week {
+    type: inner
+    relationship: one_to_one
+    sql_on: ${kpi_by_week.base_date_est_week}=${re_engaged_users_comeback_after_15_days.base_date_week} ;;
+
+  }
+}
