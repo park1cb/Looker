@@ -57,6 +57,13 @@ view: episode_count_distribution {
     sql: ${paid_episode_read} ;;
   }
 
+  dimension: episode_purchase_tier2 {
+    type: tier
+    style: integer
+    tiers: [1,2,3,4,5,6,7,8,9,10,20,30,40]
+    sql: ${paid_episode_read} ;;
+  }
+
   measure: payers {
     type: count_distinct
     sql: ${user_id} ;;
