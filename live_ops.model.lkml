@@ -168,7 +168,16 @@ explore: paid_episode_read_per_paying_users {}
 
 explore: paying_conversion_by_days {}
 
-explore: episode_purchased_per_story_starter {}
+explore: episode_purchased_per_story_starter {
+  join: episode_purchased_per_story_starter_his_surrogate {
+    from: episode_purchased_per_story_starter
+    type: inner
+    relationship: one_to_one
+    sql_on: ${episode_purchased_per_story_starter.date_date}=${episode_purchased_per_story_starter_his_surrogate.date_date}
+    and ${episode_purchased_per_story_starter.day}=${episode_purchased_per_story_starter_his_surrogate.day};;
+
+  }
+}
 
 explore: high_margin_story_sales {}
 

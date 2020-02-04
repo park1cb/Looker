@@ -70,7 +70,7 @@ view: paying_conversion_by_days {
   measure: paying_conversion {
     type: sum
     sql: ${percent} ;;
-    value_format_name: percent_4
+    value_format_name: percent_2
   }
 
 
