@@ -8,7 +8,7 @@ view: dw_amplitude_early_funnel_raw {
     ,json_extract_scalar(event_properties, '$["Story Id"]') as story_id
     ,base_date
     from hive.dw.dw_amplitude
-    where base_date>= cast(date_add('month',-6,now()) as date);;
+    where base_date>= date '2019-09-01';;
     sql_trigger_value: select date_trunc('day',now());;
     }
 
