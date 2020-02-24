@@ -1,33 +1,33 @@
 view: cohort_data_purchase_raw_data {
   derived_table: {
     sql: select distinct
-      case when a.platform='android' then device.adid when a.platform='ios' then coalesce(device.adid,device.idfv) end as device_id,
-      a.adjust_id,
-      a.platform,
+      case when a.os_name='android' then device.adid when a.os_name='ios' then coalesce(device.adid,device.idfv) end as device_id,
+      a.adid as adjust_id,
+      a.os_name as platform,
       c.user_id,
-      a.installed_at,
+      a.attributed_at as installed_at,
       c.used_at,
       c.amount,
       c.story_id,
       s.title,
       c.episode_id,
       case when c.coin_type in ('one-time','subscription') then 'Y' else 'N' end as purchased_user,
-      date_diff('hour',a.installed_at,c.used_at)/24 as cohort,
-      case when a.network in ('Organic','Branch(iOS)','Branch(Android)') then 'Organic' else 'Paid' end as network
+      date_diff('hour',a.attributed_at,c.used_at)/24 as cohort,
+      case when a.network_name in ('Organic','Branch(iOS)','Branch(Android)') then 'Organic' else 'Paid' end as network
 
-      from mart.mart.install_attribution_adjust a
+      from mart.mart.user_mapper_adjust a
 
       left join mart.mart.coin_used_devices c
-      on a.adjust_id=c.adjust_id
+      on a.adid=c.adjust_id
 
       join mysql.gatsby.user_devices device
-      on a.adjust_id=device.adjust_id
+      on a.adid=device.adjust_id
 
       join mysql.gatsby.stories s
       on s.id=c.story_id
 
-      where a.installed_date_est>=date_add('month',-9,now())
-      and date_diff('hour',a.installed_at,c.used_at)/24>=0
+      where a.attributed_at at time zone '-05:00'>=date_add('month',-9,now())
+      and date_diff('hour',a.attributed_at,c.used_at)/24>=0
        ;;
     sql_trigger_value: select date_trunc('hour',now());;
   }

@@ -197,3 +197,8 @@ explore: re_engaged_users_comeback_after_15_days {
 }
 
 explore: marketing_device_lists_installed_attributed {}
+
+
+
+######
+explore: cohort_data_purchase_raw_data {}
