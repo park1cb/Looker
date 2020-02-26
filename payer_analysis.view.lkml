@@ -198,6 +198,52 @@ view: payer_analysis {
     }
   }
 
+  dimension: payer_cohort_Ashley {
+    case: {
+      when: {
+        sql: ${days} is null ;;
+        label: "Non PU"
+      }
+      when: {
+        sql: ${days}=0;;
+        label: "D0"
+      }
+      when: {
+        sql: ${days}=1;;
+        label: "D1"
+      }
+      when: {
+        sql: ${days}=2;;
+        label: "D2"
+      }
+      when: {
+        sql: ${days}=3;;
+        label: "D3"
+      }
+
+      when: {
+        sql: ${days}=4;;
+        label: "D4"
+      }
+
+      when: {
+        sql: ${days}=5;;
+        label: "D5"
+      }
+
+      when: {
+        sql: ${days}=6;;
+        label: "D6"
+      }
+
+      when: {
+        sql: ${days}=7;;
+        label: "D7"
+      }
+      else:"D8+"
+    }
+  }
+
   dimension: writer_payout {
     type: number
     sql: ${TABLE}.writer_payout ;;
