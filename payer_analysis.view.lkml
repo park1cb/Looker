@@ -4,8 +4,8 @@ view: payer_analysis {
         u.id as user_id
         , cu.user_id as paid_user_id
         , cu.story_id
-        , cu.created_at
-        , cb.type as sales_type
+        , cu.used_at as created_at
+        , cu.coin_type as sales_type
         , u.joined_at
         , s.writer_id as writer_id
         , s.title
@@ -17,12 +17,11 @@ view: payer_analysis {
         , s.views
         , e.no as episode_no
         , cu.amount as coins
-        , cu.coin_balance_id
         , tscv.value as writer_payout
-        , date_diff('hour',u.joined_at,cu.created_at)/24 as days
+        , date_diff('hour',u.joined_at,cu.used_at)/24 as days
       from mysql.gatsby.users u
 
-      left join mysql.gatsby.coin_usages cu
+      left join mart.mart.coin_used_devices cu
       on u.id=cu.user_id
 
       left join mysql.gatsby.stories s
@@ -43,8 +42,6 @@ view: payer_analysis {
       on cu.episode_id = e.id
 
 
-      left join mysql.gatsby.coin_balances cb
-      on cb.id = cu.coin_balance_id
 
       left join mysql.gatsby.transfer_story_coin_values tscv
       on tscv.story_id=s.id
@@ -74,6 +71,7 @@ view: payer_analysis {
 
 
   dimension_group: created_at {
+    label: "purchased_at"
     type: time
     timeframes: [
       raw,
@@ -92,6 +90,11 @@ view: payer_analysis {
   dimension: sales_type {
     type: string
     sql: ${TABLE}.sales_type ;;
+  }
+
+  dimension: is_purchased {
+    type: yesno
+    sql: ${sales_type} in ('one-time','subscription') ;;
   }
 
   dimension_group: joined_at {
@@ -162,11 +165,6 @@ view: payer_analysis {
   dimension: coins {
     type: number
     sql: ${TABLE}.coins ;;
-  }
-
-  dimension: coin_balance_id {
-    type: number
-    sql: ${TABLE}.coin_balance_id ;;
   }
 
   dimension: days {
