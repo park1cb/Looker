@@ -4,7 +4,9 @@ view: user_episode_read_dt_raw_data {
       (
       select story_id,user_id,episode_id,min(base_dt) as episode_read_dt
       from hive.dw.dw_bookmark
+      where base_date>=date_add('month',-1,date(now()))
       group by 1,2,3
+
       )
       select a.*,b."no",lag(a.episode_read_dt) over (partition by a.user_id, a.story_id order by "no") as previous_episode_read_dt,b.published_at as episode_published_at
       from mast a
