@@ -9,7 +9,7 @@ view: dw_amplitude_early_funnel_raw {
     ,base_date
     from hive.dw.dw_amplitude
     where base_date>= date '2019-09-01';;
-    sql_trigger_value: select date_trunc('day',now());;
+    sql_trigger_value: select date_trunc('year',now());;
     }
 
 
