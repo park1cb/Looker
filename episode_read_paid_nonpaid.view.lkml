@@ -12,7 +12,7 @@ view: episode_read_paid_nonpaid {
       (
       select distinct user_id,story_id,episode_id,base_dt
       from hive.dw.dw_bookmark
-      where base_date>=date_add('day',-7,now())
+      where base_date>=date_add('month',-1,now())
       )bookmark
 
       left join mysql.gatsby.coin_usages cu

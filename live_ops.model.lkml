@@ -112,8 +112,6 @@ explore: first_actual_read_dt_est {}
 explore: story_sales_by_cohort {}
 
 
-explore: story_first_purchase {}
-
 explore: episode_read_paid_nonpaid {}
 
 explore: stories {}
