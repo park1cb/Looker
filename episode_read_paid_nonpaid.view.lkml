@@ -18,7 +18,7 @@ view: episode_read_paid_nonpaid {
       left join mysql.gatsby.coin_usages cu
       on bookmark.user_id=cu.user_id
       and bookmark.episode_id=cu.episode_id
-      and cu.created_at>=now()-interval '7' day
+      and cu.created_at>=date_add('month',-1,now())
 
       left join
       (select id,type
