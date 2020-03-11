@@ -101,7 +101,16 @@ explore: ltv_graph_by_week {}
 
 explore: sales_by_story_type {}
 
-explore: payer_analysis {}
+explore: payer_analysis {
+  join: braze_canvas_entry {
+    #fields: [braze_canvas_entry.external_user_id,braze_canvas_entry.canvas_id,braze_canvas_entry.canvas_variation_id]
+    relationship: many_to_one
+    sql_on: ${payer_analysis.user_id}=${braze_canvas_entry.external_user_id} ;;
+    type: inner
+
+  }
+
+}
 
 explore: first_paid_episode_purchase_date {}
 
@@ -198,3 +207,5 @@ explore: marketing_device_lists_installed_attributed {}
 
 ######
 explore: cohort_data_purchase_raw_data {}
+
+explore: braze_canvas_entry {}
