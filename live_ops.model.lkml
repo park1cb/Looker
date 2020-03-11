@@ -114,8 +114,6 @@ explore: story_sales_by_cohort {}
 
 explore: episode_read_paid_nonpaid {}
 
-explore: stories {}
-
 
 explore: story_sales_total_coins {}
 explore: episode_count_distribution {}
