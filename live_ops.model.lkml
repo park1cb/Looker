@@ -103,7 +103,6 @@ explore: sales_by_story_type {}
 
 explore: payer_analysis {
   join: braze_canvas_entry {
-    #fields: [braze_canvas_entry.external_user_id,braze_canvas_entry.canvas_id,braze_canvas_entry.canvas_variation_id]
     relationship: many_to_one
     sql_on: ${payer_analysis.user_id}=${braze_canvas_entry.external_user_id} ;;
     type: inner
@@ -118,10 +117,19 @@ explore: cohoted_by_first_actual_read {}
 
 explore: first_actual_read_dt_est {}
 
-explore: story_sales_by_cohort {}
+explore: story_sales_by_cohort {
+
+}
 
 
-explore: episode_read_paid_nonpaid {}
+explore: episode_read_paid_nonpaid {
+    join: braze_canvas_entry {
+      #fields: [braze_canvas_entry.external_user_id,braze_canvas_entry.canvas_id,braze_canvas_entry.canvas_variation_id]
+      relationship: many_to_one
+      sql_on: ${episode_read_paid_nonpaid.user_id}=${braze_canvas_entry.external_user_id} ;;
+      type: inner
+    }
+}
 
 
 explore: story_sales_total_coins {}
@@ -129,7 +137,14 @@ explore: episode_count_distribution {}
 
 explore: best_performing_converter {}
 
-explore: user_story_retention {}
+explore: user_story_retention {
+  join: braze_canvas_entry {
+    #fields: [braze_canvas_entry.external_user_id,braze_canvas_entry.canvas_id,braze_canvas_entry.canvas_variation_id]
+    relationship: many_to_one
+    sql_on: ${user_story_retention.user_id}=${braze_canvas_entry.external_user_id} ;;
+    type: inner
+  }
+}
 
 explore: another_episode_purchase_count {}
 
@@ -157,7 +172,13 @@ explore: story_revenue_and_costs_by_cohort_raw_data {}
 
 explore: user_episode_read_dt_raw_data{}
 
-explore: story_episode_read_type {}
+explore: story_episode_read_type {
+  join: braze_canvas_entry {
+    relationship: many_to_one
+    sql_on: ${story_episode_read_type.user_id}=${braze_canvas_entry.external_user_id} ;;
+    type: inner
+  }
+}
 
 explore: ltv_table_week_device {}
 
