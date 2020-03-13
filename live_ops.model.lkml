@@ -233,4 +233,10 @@ explore: braze_canvas_entry {}
 
 explore: story_title {}
 
-explore: episode_read_by_cohort_story_level {}
+explore: episode_read_by_cohort_story_level {
+  join: story_title {
+    type: inner
+    relationship: many_to_one
+    sql_on: ${episode_read_by_cohort_story_level.story_id}=${story_title.id} ;;
+  }
+}

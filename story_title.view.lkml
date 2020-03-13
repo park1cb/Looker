@@ -2,16 +2,15 @@ view: story_title {
   derived_table: {
     sql: select id,title
       from mysql.gatsby.stories
-      where id={%parameter id%}
-       ;;
+        ;;
   }
 
   suggestions: no
 
 
-  parameter: id {
+  dimension:: id {
     type: number
-    default_value:"8602"
+    sql: ${TABLE}.id ;;
   }
 
   dimension: title {
