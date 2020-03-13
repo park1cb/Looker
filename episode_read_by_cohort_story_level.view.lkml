@@ -6,9 +6,10 @@ view: episode_read_by_cohort_story_level {
           from mart.mart.coin_usage_by_ads
           where story_id in (8602,8739)
           and coin_type in ('one_time','subscription')
-          and date_diff('hour',attributed_at,used_at)/24=0
+          and date_diff('hour',attributed_at,used_at)/24<=3
+          and date_diff('hour',attributed_at,used_at)/24>=0
           group by 1,2,3
-          having sum(amount)/3>=5
+          having sum(amount)/3>=10
       )
 
 
