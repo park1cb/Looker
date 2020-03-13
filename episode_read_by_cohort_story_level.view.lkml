@@ -6,10 +6,10 @@ view: episode_read_by_cohort_story_level {
           from mart.mart.coin_usage_by_ads
           where story_id in (8602,8739)
           and coin_type in ('one_time','subscription')
-          and date_diff('hour',attributed_at,used_at)/24<=3
-          and date_diff('hour',attributed_at,used_at)/24>=0
+          and date_diff('hour',attributed_at,used_at)/24<={%parameter purchased_within%}
+          --and date_diff('hour',attributed_at,used_at)/24>=0
           group by 1,2,3
-          having sum(amount)/3>=10
+          having sum(amount)/3>={%parameter minimum_paid_episode_purchase%}
       )
 
 
@@ -42,6 +42,16 @@ view: episode_read_by_cohort_story_level {
   }
 
   suggestions: no
+
+  parameter: purchased_within {
+    type: number
+    default_value: "0"
+  }
+
+  parameter: minimum_paid_episode_purchase{
+    type: number
+    default_value: "3"
+  }
 
 
   dimension_group: installed_date {
