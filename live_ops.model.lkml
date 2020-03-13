@@ -230,3 +230,5 @@ explore: marketing_device_lists_installed_attributed {}
 explore: cohort_data_purchase_raw_data {}
 
 explore: braze_canvas_entry {}
+
+explore: story_title {}
