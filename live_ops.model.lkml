@@ -232,3 +232,5 @@ explore: cohort_data_purchase_raw_data {}
 explore: braze_canvas_entry {}
 
 explore: story_title {}
+
+explore: episode_read_by_cohort_story_level {}
