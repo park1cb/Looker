@@ -1,37 +1,20 @@
 view: episode_read_paid_nonpaid {
   derived_table: {
-    sql: select bookmark.user_id
+    sql: select cu.user_id
       ,user.joined_at
-      ,bookmark.story_id
-      ,min(bookmark.base_dt) as base_dt
+      ,cu.story_id
       ,epi."no"
-      ,cu.coin_transaction_id
-      ,cu.created_at as purchased_at
-      ,case when cb.type in ('one-time','subscription') then 'paid' else 'free' end type
-      from
-      (
-      select distinct user_id,story_id,episode_id,base_dt
-      from hive.dw.dw_bookmark
-      where base_date>=date_add('month',-1,now())
-      )bookmark
+      ,cu.coin_usage_id as coin_transaction_id
+      ,cu.used_at as purchased_at
+      ,case when cu.coin_type in ('one-time','subscription') then 'paid' else 'free' end type
+      from mart.mart.coin_usage_by_ads cu
 
-      left join mysql.gatsby.coin_usages cu
-      on bookmark.user_id=cu.user_id
-      and bookmark.episode_id=cu.episode_id
-      and cu.created_at>=date_add('month',-1,now())
-
-      left join
-      (select id,type
-      from mysql.gatsby.coin_balances cb
-      )cb
-      on cb.id = cu.coin_balance_id
 
       join mysql.gatsby.episodes epi
-      on epi.id=bookmark.episode_id
+      on epi.id=cu.episode_id
 
       join mysql.gatsby.users user
-      on user.id=bookmark.user_id
-      group by 1,2,3,5,6,7,8
+      on user.id=cu.user_id
        ;;
     sql_trigger_value: select date_trunc('hour',now());;
   }
@@ -66,8 +49,8 @@ view: episode_read_paid_nonpaid {
     sql: ${TABLE}.joined_at ;;
   }
 
-  dimension_group: base_dt {
-    label: "bookmarked_at"
+
+  dimension_group: purchased_at {
     type: time
     timeframes: [
       raw,
@@ -80,13 +63,13 @@ view: episode_read_paid_nonpaid {
     ]
     convert_tz: yes
     datatype: date
-    sql: ${TABLE}.base_dt ;;
+    sql: ${TABLE}.purchased_at ;;
   }
 
   dimension: cohort {
     type: duration_day
     sql_start: ${joined_at_raw} ;;
-    sql_end: ${base_dt_raw} ;;
+    sql_end: ${purchased_at_raw} ;;
   }
 
   dimension: no_ {
@@ -104,22 +87,7 @@ view: episode_read_paid_nonpaid {
     sql: ${TABLE}.coin_transaction_id ;;
   }
 
-  dimension_group: purchased_at {
 
-    type: time
-    timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    convert_tz: yes
-    datatype: date
-    sql: ${TABLE}.purchased_at ;;
-  }
 
   dimension: type {
     type: string
