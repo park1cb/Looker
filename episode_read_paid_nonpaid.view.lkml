@@ -15,6 +15,8 @@ view: episode_read_paid_nonpaid {
 
       join mysql.gatsby.users user
       on user.id=cu.user_id
+
+      where cu.used_at>=date_add('month',-6,now())
        ;;
     sql_trigger_value: select date_trunc('hour',now());;
   }
