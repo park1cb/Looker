@@ -23,6 +23,7 @@ view: braze_canvas_entry {
   dimension: external_user_id {
     type: number
     sql: ${TABLE}.external_user_id ;;
+    primary_key: yes
   }
 
 
