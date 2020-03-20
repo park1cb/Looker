@@ -234,7 +234,7 @@ view: paying_conversion_rate {
 
     dimension: running_month8_formatted {
       type: number
-      sql: case when ${running_month8} = ${running_month8_prev_day}then null
+      sql: case when ${running_month8} = ${running_month8_prev_day} then null
         else ${running_month8} end ;;
       value_format_name: usd
       hidden: yes

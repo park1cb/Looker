@@ -39,6 +39,11 @@ view: braze_canvas_entry {
     sql: ${TABLE}.canvas_variation_id ;;
   }
 
+  measure: user_count {
+    type: count_distinct
+    sql: ${external_user_id} ;;
+  }
+
 
 
 }
