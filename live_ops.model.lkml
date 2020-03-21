@@ -240,3 +240,5 @@ explore: episode_read_by_cohort_story_level {
     sql_on: ${episode_read_by_cohort_story_level.story_id}=${story_title.id} ;;
   }
 }
+
+explore: ltv_table_month_gross_revenue {}
