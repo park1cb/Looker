@@ -125,11 +125,11 @@ where day>=0
       (
       select
       Day
-      --,element_at(kv,date_format(date_trunc('month',date_add('month',-13,now())),'%Y-%m')) as Month13
-      --,element_at(kv,date_format(date_trunc('month',date_add('month',-12,now())),'%Y-%m')) as Month12
-      --,element_at(kv,date_format(date_trunc('month',date_add('month',-11,now())),'%Y-%m')) as Month11
-      --,element_at(kv,date_format(date_trunc('month',date_add('month',-10,now())),'%Y-%m')) as Month10
-      --,element_at(kv,date_format(date_trunc('month',date_add('month',-9,now())),'%Y-%m')) as Month9
+      ,element_at(kv,date_format(date_trunc('month',date_add('month',-13,now())),'%Y-%m')) as Month13
+      ,element_at(kv,date_format(date_trunc('month',date_add('month',-12,now())),'%Y-%m')) as Month12
+      ,element_at(kv,date_format(date_trunc('month',date_add('month',-11,now())),'%Y-%m')) as Month11
+      ,element_at(kv,date_format(date_trunc('month',date_add('month',-10,now())),'%Y-%m')) as Month10
+      ,element_at(kv,date_format(date_trunc('month',date_add('month',-9,now())),'%Y-%m')) as Month9
       ,element_at(kv,date_format(date_trunc('month',date_add('month',-8,now())),'%Y-%m')) as Month8
       ,element_at(kv,date_format(date_trunc('month',date_add('month',-7,now())),'%Y-%m')) as Month7
       ,element_at(kv,date_format(date_trunc('month',date_add('month',-6,now())),'%Y-%m')) as Month6
@@ -150,6 +150,11 @@ where day>=0
       (
       select
       Day
+      , sum(Month13) over (order by Day asc) as RunningMonth13
+      , sum(Month12) over (order by Day asc) as RunningMonth12
+      , sum(Month11) over (order by Day asc) as RunningMonth11
+      , sum(Month10) over (order by Day asc) as RunningMonth10
+      , sum(Month9) over (order by Day asc) as RunningMonth9
       , sum(Month8) over (order by Day asc) as RunningMonth8
       , sum(Month7) over (order by Day asc) as RunningMonth7
       , sum(Month6) over (order by Day asc) as RunningMonth6
@@ -163,6 +168,16 @@ where day>=0
       )
       select
       Day
+      , RunningMonth13
+      , lag(RunningMonth13) over (order by Day asc) as RunningMonth13_prev_day
+      , RunningMonth12
+      , lag(RunningMonth12) over (order by Day asc) as RunningMonth12_prev_day
+      , RunningMonth11
+      , lag(RunningMonth11) over (order by Day asc) as RunningMonth11_prev_day
+      , RunningMonth10
+      , lag(RunningMonth10) over (order by Day asc) as RunningMonth10_prev_day
+      , RunningMonth9
+      , lag(RunningMonth9) over (order by Day asc) as RunningMonth9_prev_day
       , RunningMonth8
       , lag(RunningMonth8) over (order by Day asc) as RunningMonth8_prev_day
       , RunningMonth7
@@ -204,6 +219,65 @@ where day>=0
       sql: ${TABLE}."Day" ;;
     }
 
+  dimension: running_month13 {
+    type: number
+    sql: ${TABLE}.RunningMonth13 ;;
+    hidden: yes
+  }
+
+  dimension: running_month13_prev_day {
+    type: number
+    sql: ${TABLE}.RunningMonth13_prev_day ;;
+    hidden: yes
+  }
+
+  dimension: running_month12 {
+    type: number
+    sql: ${TABLE}.RunningMonth12 ;;
+    hidden: yes
+  }
+
+  dimension: running_month12_prev_day {
+    type: number
+    sql: ${TABLE}.RunningMonth12_prev_day ;;
+    hidden: yes
+  }
+
+  dimension: running_month11 {
+    type: number
+    sql: ${TABLE}.RunningMonth11 ;;
+    hidden: yes
+  }
+
+  dimension: running_month11_prev_day {
+    type: number
+    sql: ${TABLE}.RunningMonth11_prev_day ;;
+    hidden: yes
+  }
+
+  dimension: running_month10 {
+    type: number
+    sql: ${TABLE}.RunningMonth10 ;;
+    hidden: yes
+  }
+
+  dimension: running_month10_prev_day {
+    type: number
+    sql: ${TABLE}.RunningMonth10_prev_day ;;
+    hidden: yes
+  }
+
+  dimension: running_month9 {
+    type: number
+    sql: ${TABLE}.RunningMonth9 ;;
+    hidden: yes
+  }
+
+  dimension: running_month9_prev_day {
+    type: number
+    sql: ${TABLE}.RunningMonth9_prev_day ;;
+    hidden: yes
+  }
 
     dimension: running_month8 {
       type: number
@@ -312,6 +386,46 @@ where day>=0
       sql: ${TABLE}.RunningMonth0_prev_day ;;
       hidden: yes
     }
+
+  dimension: running_month13_formatted {
+    type: number
+    sql: case when ${running_month13} = ${running_month13_prev_day} then null
+      else ${running_month13} end ;;
+    value_format_name: usd
+    hidden: yes
+  }
+
+  dimension: running_month12_formatted {
+    type: number
+    sql: case when ${running_month12} = ${running_month12_prev_day} then null
+      else ${running_month12} end ;;
+    value_format_name: usd
+    hidden: yes
+  }
+
+  dimension: running_month11_formatted {
+    type: number
+    sql: case when ${running_month11} = ${running_month11_prev_day} then null
+      else ${running_month11} end ;;
+    value_format_name: usd
+    hidden: yes
+  }
+
+  dimension: running_month10_formatted {
+    type: number
+    sql: case when ${running_month10} = ${running_month10_prev_day} then null
+      else ${running_month10} end ;;
+    value_format_name: usd
+    hidden: yes
+  }
+
+  dimension: running_month9_formatted {
+    type: number
+    sql: case when ${running_month9} = ${running_month9_prev_day} then null
+      else ${running_month9} end ;;
+    value_format_name: usd
+    hidden: yes
+  }
 
     dimension: running_month8_formatted {
       type: number
@@ -449,9 +563,55 @@ where day>=0
       value_format: "$#0.####"
     }
 
+  measure: Month9 {
+    type: average
+    label: "Month 9"
+    sql: ${running_month9_formatted} ;;
+    value_format: "$#0.####"
+  }
+
+  measure: Month10 {
+    type: average
+    label: "Month 10"
+    sql: ${running_month10_formatted} ;;
+    value_format: "$#0.####"
+  }
+
+  measure: Month11 {
+    type: average
+    label: "Month 11"
+    sql: ${running_month11_formatted} ;;
+    value_format: "$#0.####"
+  }
+
+  measure: Month12 {
+    type: average
+    label: "Month 12"
+    sql: ${running_month12_formatted} ;;
+    value_format: "$#0.####"
+  }
+
+  measure: Month13 {
+    type: average
+    label: "Month 13"
+    sql: ${running_month13_formatted} ;;
+    value_format: "$#0.####"
+  }
+
     set: detail {
       fields: [
         day,
+        running_month13,
+        running_month13_prev_day,
+        running_month12,
+        running_month12_prev_day,
+        running_month11,
+        running_month11_prev_day,
+        running_month10,
+        running_month10_prev_day,
+        running_month9,
+        running_month9_prev_day,
+
         running_month8,
         running_month8_prev_day,
         running_month7,
