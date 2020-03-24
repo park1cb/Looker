@@ -4,7 +4,7 @@ view: user_episode_read_dt_raw_data {
       (
       select story_id,user_id,episode_id,min(base_dt) as episode_read_dt
       from hive.dw.dw_bookmark
-      where base_date>=date_add('month',-1,date(now()))
+      where base_date>=date_add('month',-8,date(now()))
       group by 1,2,3
 
       )
@@ -13,7 +13,7 @@ view: user_episode_read_dt_raw_data {
       join mysql.gatsby.episodes b
       on b.id=a.episode_id
        ;;
-      sql_trigger_value: select date_trunc('hour',now());;
+      sql_trigger_value: select date_trunc('day',now());;
   }
 
   suggestions: no
