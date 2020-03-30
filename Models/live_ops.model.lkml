@@ -1,7 +1,8 @@
 connection: "radish_datalake"
+include: "/*.view.lkml"
 
 # include all the views
-include: "*.view"
+#include: "*.view"
 
 datagroup: live_ops_default_datagroup {
   # sql_trigger: SELECT MAX(id) FROM etl_log;;
@@ -60,14 +61,14 @@ explore: paid_users {
 
 }
 
-explore: active_users {
-  label: "Active Users"
-  join: new_users {
-    type: inner
-    sql_on: ${new_users.joined_at_date}=${active_users.joined_at_date} ;;
-    relationship: one_to_one
-  }
-}
+#explore: active_users {
+#  label: "Active Users"
+#  join: new_users {
+#    type: inner
+#    sql_on: ${new_users.joined_at_date}=${active_users.joined_at_date} ;;
+#    relationship: one_to_one
+#  }
+#}
 
 explore: early_funnel {}
 
@@ -81,7 +82,7 @@ explore: early_funnel_path3 {}
 
 explore: early_funnel_path4 {}
 
-explore: arpu_table {}
+#explore: arpu_table {}
 
 explore: arppu_table {}
 
