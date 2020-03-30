@@ -12,10 +12,7 @@ view: user_story_retention_raw_data {
 
   suggestions: no
 
-  measure: count {
-    type: count
-    drill_fields: [detail*]
-  }
+
 
   dimension: base_date_est {
     type: date
@@ -42,7 +39,5 @@ view: user_story_retention_raw_data {
     sql: ${TABLE}.min_episode ;;
   }
 
-  set: detail {
-    fields: [base_date_est, user_id, story_id, no, min_episode]
-  }
+
 }

@@ -39,10 +39,7 @@ view: organic_vs_paid_installs {
 
   suggestions: no
 
-  measure: count {
-    type: count
-    drill_fields: [detail*]
-  }
+
 
   dimension_group: date {
     type: time
@@ -70,7 +67,5 @@ view: organic_vs_paid_installs {
     sql: ${TABLE}.Paid_Users ;;
   }
 
-  set: detail {
-    fields: [date, organic_users, paid_users]
-  }
+
 }

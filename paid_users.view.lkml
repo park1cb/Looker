@@ -1,20 +1,23 @@
 view: paid_users {
   derived_table: {
-    sql: select paid.user_id
+    sql: select
+      users.id as new_user_id
+      ,paid.user_id as paid_user_id
       ,users.joined_at
-      ,paid.created_at as Purchased_at
+      ,paid.purchased_at
       ,paid.product_id as product
-      ,paid.amount
-      ,pd.type
-      ,pd.original_price
+      ,paid.product_type as type
+      ,paid.platform as os_name
+      ,paid.price
 
       from mysql.gatsby.users users
 
-      join mysql.gatsby.paid_coin_issues paid
+      left join mart.mart.coin_purchased_devices paid
       on paid.user_id=users.id
 
-      join mysql.gatsby.products pd
-      on pd.id=paid.product_id
+      left join mysql.gatsby.pre_signin_users pre
+      on users.id = pre.pre_user_id
+      where pre.pre_user_id is null
        ;;
   }
 
@@ -22,9 +25,14 @@ view: paid_users {
 
 
 
-  dimension: user_id {
+  dimension: new_user_id {
     type: number
-    sql: ${TABLE}.user_id ;;
+    sql: ${TABLE}.new_user_id ;;
+  }
+
+  dimension: paid_user_id {
+    type: number
+    sql: ${TABLE}.paid_user_id ;;
   }
 
   dimension_group: joined_at {
@@ -66,36 +74,44 @@ view: paid_users {
     sql: ${TABLE}.product ;;
   }
 
-  dimension: amount {
-    type: number
-    sql: ${TABLE}.amount ;;
+  dimension: os_name {
+    type: string
+    sql: ${TABLE}.os_name ;;
   }
+
+
 
   dimension: type {
     type: string
     sql: ${TABLE}.type ;;
   }
 
-  dimension: original_price {
+  dimension: price {
     type: number
-    sql: ${TABLE}.original_price ;;
+    sql: ${TABLE}.price ;;
   }
+
+  measure: new_users {
+    type: count_distinct
+    sql: ${new_user_id} ;;
+  }
+
 
   measure: paid_users {
     type: count_distinct
-    sql: ${user_id} ;;
+    sql: ${paid_user_id} ;;
   }
 
   measure: revenue {
     type: sum
-    sql: ${original_price} ;;
+    sql: ${price} ;;
     value_format_name: usd
   }
 
 
   measure: Average_Price{
     type: average
-    sql: ${original_price} ;;
+    sql: ${price} ;;
     value_format_name: usd
   }
   dimension_group: cohort {

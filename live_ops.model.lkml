@@ -57,11 +57,7 @@ explore: actual_reading_rate_in_96_hours {
 
 explore: paid_users {
   label: "conversion to payer"
-  join: new_users {
-    type: inner
-    sql_on: ${new_users.joined_at_date}=${paid_users.joined_at_date} ;;
-    relationship: one_to_one
-  }
+
 }
 
 explore: active_users {
