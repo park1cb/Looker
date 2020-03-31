@@ -239,3 +239,5 @@ explore: episode_read_by_cohort_story_level {
 }
 
 explore: ltv_table_month_gross_revenue {}
+
+explore: install_to_payer_by_device_level {}
