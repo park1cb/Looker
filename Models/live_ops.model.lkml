@@ -16,9 +16,9 @@ persist_with: live_ops_default_datagroup
 
 explore: Paying_Conversion {}
 
-explore: subscription_usage_distribution {}
+#explore: subscription_usage_distribution {}
 
-explore: subscriptions_by_count {}
+#explore: subscriptions_by_count {}
 
 #explore: monthly_subscription {}
 
