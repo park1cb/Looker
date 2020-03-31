@@ -1,7 +1,7 @@
 view: install_to_payer_by_device_level {
   derived_table: {
     sql: select
-    date(attributed_at at time zone '-05:00') installed_date
+    attributed_at installed_date
     ,a.os_name
     ,a.network_name
     ,a.campaign_name
@@ -9,7 +9,7 @@ view: install_to_payer_by_device_level {
     ,a.creative_name
     ,a.adid
     ,b.adjust_id
-    ,date(min(purchased_at at time zone '-05:00')) as first_purchased_date
+    ,min(purchased_at) as first_purchased_date
       from mart.mart.user_mapper_adjust a
       left join mart.mart.coin_purchased_devices b
       on a.adid=b.adjust_id
@@ -25,13 +25,14 @@ view: install_to_payer_by_device_level {
   dimension_group: installed_date {
     type: time
     timeframes: [
+      raw,
       date,
       week,
       month,
       quarter,
       year
     ]
-    convert_tz: no
+    convert_tz: yes
     datatype: timestamp
     sql: ${TABLE}.installed_date ;;
   }
@@ -75,13 +76,14 @@ view: install_to_payer_by_device_level {
   dimension_group: first_purchased_date {
     type: time
     timeframes: [
+      raw,
       date,
       week,
       month,
       quarter,
       year
     ]
-    convert_tz: no
+    convert_tz: yes
     datatype: timestamp
     sql: ${TABLE}.first_purchased_date ;;
   }
@@ -89,8 +91,8 @@ view: install_to_payer_by_device_level {
   dimension_group: cohort {
     type: duration
     intervals: [day]
-    sql_start: ${installed_date_date} ;;
-    sql_end: ${first_purchased_date_date} ;;
+    sql_start: ${installed_date_raw} ;;
+    sql_end: ${first_purchased_date_raw} ;;
   }
 
   measure: installed_devices{
