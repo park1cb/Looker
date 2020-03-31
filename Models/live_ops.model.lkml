@@ -20,7 +20,7 @@ explore: subscription_usage_distribution {}
 
 explore: subscriptions_by_count {}
 
-explore: monthly_subscription {}
+#explore: monthly_subscription {}
 
 #explore: HRA_Usage {}
 
@@ -34,7 +34,7 @@ explore: subscriber_average_story_reads {}
 
 explore: top_story_raking_by_sales_product {}
 
-explore: monthly_subscriber_spikes {}
+#explore: monthly_subscriber_spikes {}
 
 explore: ltv_final {}
 
