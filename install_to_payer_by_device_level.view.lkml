@@ -3,6 +3,7 @@ view: install_to_payer_by_device_level {
     sql: select
     date(attributed_at at time zone '-05:00') installed_date
     ,a.os_name
+    ,a.network_name
     ,a.campaign_name
     ,a.adgroup_name
     ,a.creative_name
@@ -13,7 +14,7 @@ view: install_to_payer_by_device_level {
       left join mart.mart.coin_purchased_devices b
       on a.adid=b.adjust_id
       and b.purchased_at>=a.attributed_at
-      group by 1,2,3,4,5,6,7
+      group by 1,2,3,4,5,6,7,8
        ;;
   }
 
@@ -39,6 +40,12 @@ view: install_to_payer_by_device_level {
     type: string
     sql: ${TABLE}.os_name ;;
   }
+
+  dimension: network_name {
+    type: string
+    sql: ${TABLE}.network_name ;;
+  }
+
 
   dimension: campaign_name {
     type: string
