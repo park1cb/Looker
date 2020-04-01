@@ -66,11 +66,13 @@ view: install_to_payer_by_device_level {
   }
 
   dimension: adid {
+    label: "Device ID"
     type: string
     sql: ${TABLE}.adid ;;
   }
 
   dimension: adjust_id {
+    hidden: yes
     type: string
     sql: ${TABLE}.adjust_id ;;
   }
