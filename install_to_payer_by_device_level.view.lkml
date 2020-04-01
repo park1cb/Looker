@@ -117,12 +117,12 @@ view: install_to_payer_by_device_level {
     sql_end: ${first_purchased_date_raw} ;;
   }
 
-  dimension_group: purchase_cohort {
-    type: duration
-    intervals: [day]
-    sql_start: ${installed_date_raw} ;;
-    sql_end: ${purchased_date_raw} ;;
-  }
+  #dimension_group: purchase_cohort {
+  #  type: duration
+  #  intervals: [day]
+  #  sql_start: ${installed_date_raw} ;;
+  #  sql_end: ${purchased_date_raw} ;;
+  #}
 
   measure: installed_devices{
     type: count_distinct
