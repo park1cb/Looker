@@ -1,7 +1,7 @@
 view: install_to_payer_by_device_level {
   derived_table: {
     sql: select
-    installed_at at time zone '-05:00' installed_date
+    installed_at at time zone '-05:00' as installed_date
     ,a.os_name
     ,a.network_name
     ,a.campaign_name
