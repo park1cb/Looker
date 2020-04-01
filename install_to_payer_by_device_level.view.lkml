@@ -1,7 +1,7 @@
 view: install_to_payer_by_device_level {
   derived_table: {
     sql: select
-    attributed_at installed_date
+    installed_at at time zone '-05:00' installed_date
     ,a.os_name
     ,a.network_name
     ,a.campaign_name
@@ -10,8 +10,8 @@ view: install_to_payer_by_device_level {
     ,a.adid
     ,b.adjust_id
     ,b.price
-    ,b.purchased_at
-    ,min(purchased_at) as first_purchased_date
+    ,b.purchased_at at time zone '-05:00'
+    ,min(purchased_at at time zone '-05:00') as first_purchased_date
       from mart.mart.user_mapper_adjust a
       left join mart.mart.coin_purchased_devices b
       on a.adid=b.adjust_id
@@ -34,7 +34,7 @@ view: install_to_payer_by_device_level {
       quarter,
       year
     ]
-    convert_tz: yes
+    convert_tz: no
     datatype: timestamp
     sql: ${TABLE}.installed_date ;;
   }
@@ -92,7 +92,7 @@ view: install_to_payer_by_device_level {
       quarter,
       year
     ]
-    convert_tz: yes
+    convert_tz: no
     datatype: timestamp
     sql: ${TABLE}.first_purchased_date ;;
   }
@@ -107,7 +107,7 @@ view: install_to_payer_by_device_level {
       quarter,
       year
     ]
-    convert_tz: yes
+    convert_tz: no
     datatype: timestamp
     sql: ${TABLE}.purchased_at ;;
   }
@@ -132,6 +132,7 @@ view: install_to_payer_by_device_level {
   }
 
   measure: purchased_devices {
+    description: "Please DO NOT click first_purchased_date_date and purchased_date_date together and click this measure!!!"
     type: count_distinct
     sql: ${adjust_id} ;;
   }
