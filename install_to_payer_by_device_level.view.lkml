@@ -109,7 +109,7 @@ view: install_to_payer_by_device_level {
     ]
     convert_tz: no
     datatype: timestamp
-    sql: ${TABLE}.purchased_at ;;
+    sql: ${TABLE}.purchased_date ;;
   }
 
   dimension_group: first_purchase_cohort {
