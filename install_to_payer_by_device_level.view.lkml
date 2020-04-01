@@ -132,7 +132,7 @@ view: install_to_payer_by_device_level {
   }
 
   measure: purchased_devices {
-    description: "Please DO NOT click first_purchased_date_date and purchased_date_date together and click this measure!!!"
+    description: "Please DO NOT click first_purchased_date_date and purchased_date_date together and click this measure!!! that will represents some odd number!!"
     type: count_distinct
     sql: ${adjust_id} ;;
   }
