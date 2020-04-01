@@ -10,7 +10,7 @@ view: install_to_payer_by_device_level {
     ,a.adid
     ,b.adjust_id
     ,b.price
-    ,b.purchased_at at time zone '-05:00'
+    ,b.purchased_at at time zone '-05:00' as purchased_date
     ,min(purchased_at at time zone '-05:00') as first_purchased_date
       from mart.mart.user_mapper_adjust a
       left join mart.mart.coin_purchased_devices b
