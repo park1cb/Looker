@@ -242,4 +242,5 @@ explore: ltv_table_month_gross_revenue {}
 
 explore: install_to_payer_by_device_level {}
 
+explore: arppu_investor_request_temporary_overall {}
 explore: arppu_investor_request_temporary {}
