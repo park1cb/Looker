@@ -18,7 +18,7 @@ view: arppu_investor_request_temporary {
       on b.adjust_id=a.adid
       where date_diff('hour',installed_at,purchased_at)/24<=30
       group by 1
-      having sum(price)>=20
+      having sum(price)>=30
 
       )
       and date_diff('hour',installed_at,purchased_at)/24<=30
