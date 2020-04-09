@@ -2,6 +2,7 @@ view: payer_analysis {
   derived_table: {
     sql: select
         u.id as user_id
+        , cu.adjust_id as paid_user_adjust_id
         , cu.user_id as paid_user_id
         , cu.story_id
         , cu.used_at as created_at
@@ -53,6 +54,10 @@ view: payer_analysis {
 
   suggestions: no
 
+  dimension: paid_user_adjust_id {
+    type: string
+    sql: ${TABLE}.paid_user_adjust_id ;;
+  }
 
   dimension: user_id {
     type: number
