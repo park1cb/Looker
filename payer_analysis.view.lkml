@@ -69,6 +69,11 @@ view: payer_analysis {
     sql: ${TABLE}.os_name ;;
   }
 
+  dimension: device_id {
+    type: string
+    sql: ${TABLE}.device_id ;;
+  }
+
   dimension: user_id {
     type: number
     sql: ${TABLE}.user_id ;;
