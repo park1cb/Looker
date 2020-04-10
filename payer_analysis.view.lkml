@@ -9,6 +9,7 @@ view: payer_analysis {
         , cu.used_at as created_at
         , cu.coin_type as sales_type
         , u.joined_at
+        , a.attributed_at
         , s.writer_id as writer_id
         , s.title
         , s.chapter_count
@@ -125,6 +126,22 @@ view: payer_analysis {
     convert_tz: yes
     datatype: date
     sql: ${TABLE}.joined_at ;;
+  }
+
+  dimension_group: attributed_at {
+    type: time
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    convert_tz: yes
+    datatype: date
+    sql: ${TABLE}.attributed_at ;;
   }
 
   dimension: writer_id {
