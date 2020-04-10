@@ -36,7 +36,7 @@ view: payer_analysis {
       on cu.adjust_id=device.adjust_id
 
       join mart.mart.user_mapper_adjust a
-      on a.adid=device.user_id
+      on a.adid=device.adjust_id
 
       left join
       (
