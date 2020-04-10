@@ -1,6 +1,6 @@
 view: payer_analysis {
   derived_table: {
-    sql: select
+    sql: select distinct
         u.id as user_id
         , case when a.os_name='android' then device.adid when a.os_name='ios' then coalesce(device.idfv,device.adid) end as device_id
         , a.os_name
