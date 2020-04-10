@@ -20,6 +20,8 @@ view: payer_analysis {
         , cu.amount as coins
         , tscv.value as writer_payout
         , date_diff('hour',u.joined_at,cu.used_at)/24 as days
+        , date_diff('hour',device.created_at,cu.used_at)/24 as installed_days
+
       from mysql.gatsby.users u
 
       left join mart.mart.coin_used_devices cu
@@ -176,9 +178,17 @@ view: payer_analysis {
   }
 
   dimension: days {
+    label: "days based on joined date"
     type: number
     sql: ${TABLE}."days" ;;
   }
+
+  dimension: installed_days {
+    label: "days based on joined date"
+    type: number
+    sql: ${TABLE}."installed_days" ;;
+  }
+
 
   dimension: payer_cohort {
     case: {
