@@ -6,6 +6,7 @@ view: payer_analysis {
         , a.os_name
         , cu.user_id as paid_user_id
         , cu.story_id
+        , cu.episode_id
         , cu.used_at as created_at
         , cu.coin_type as sales_type
         , u.joined_at
@@ -20,7 +21,7 @@ view: payer_analysis {
         , s.views
         , e.no as episode_no
         , cu.amount as coins
-        , tscv.value as writer_payout
+        --, tscv.value as writer_payout
         , date_diff('hour',u.joined_at,cu.used_at)/24 as days
         , date_diff('hour',a.attributed_at,cu.used_at)/24 as attributed_days
 
@@ -54,8 +55,8 @@ view: payer_analysis {
 
 
 
-      left join mysql.gatsby.transfer_story_coin_values tscv
-      on tscv.story_id=s.id
+      --left join mysql.gatsby.transfer_story_coin_values tscv
+      --on tscv.story_id=s.id
 
 
 
@@ -89,6 +90,10 @@ view: payer_analysis {
     sql: ${TABLE}.story_id ;;
   }
 
+  dimension:episode_id {
+    type: number
+    sql: ${TABLE}.episode_id ;;
+  }
 
   dimension_group: created_at {
     label: "purchased_at"
@@ -309,6 +314,11 @@ view: payer_analysis {
   measure: new_users {
     type: count_distinct
     sql: ${user_id} ;;
+  }
+
+  measure: episode_count {
+    type: count_distinct
+    sql: ${episode_id} ;;
   }
 
   measure: new_dist_paid_users {
