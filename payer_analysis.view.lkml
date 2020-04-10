@@ -2,7 +2,8 @@ view: payer_analysis {
   derived_table: {
     sql: select
         u.id as user_id
-        , select case when device.platform='android' then device.adid when device.platform='ios' then coalesce(device.idfv,device.adid) end as device_id
+        , case when a.os_name='android' then device.adid when a.os_name='ios' then coalesce(device.idfv,device.adid) end as device_id
+        , a.os_name
         , cu.user_id as paid_user_id
         , cu.story_id
         , cu.used_at as created_at
@@ -20,7 +21,7 @@ view: payer_analysis {
         , cu.amount as coins
         , tscv.value as writer_payout
         , date_diff('hour',u.joined_at,cu.used_at)/24 as days
-        , date_diff('hour',device.created_at,cu.used_at)/24 as installed_days
+        , date_diff('hour',a.attributed_at,cu.used_at)/24 as attributed_days
 
       from mysql.gatsby.users u
 
@@ -32,6 +33,9 @@ view: payer_analysis {
 
       join mysql.gatsby.user_devices device
       on cu.adjust_id=device.adjust_id
+
+      join mart.mart.user_mapper_adjust a
+      on a.adid=device.user_id
 
       left join
       (
@@ -59,9 +63,9 @@ view: payer_analysis {
 
   suggestions: no
 
-  dimension: paid_user_adjust_id {
+  dimension: os_name {
     type: string
-    sql: ${TABLE}.paid_user_adjust_id ;;
+    sql: ${TABLE}.os_name ;;
   }
 
   dimension: user_id {
@@ -184,13 +188,14 @@ view: payer_analysis {
   }
 
   dimension: installed_days {
-    label: "days based on joined date"
+    label: "days by attributed date"
     type: number
     sql: ${TABLE}."installed_days" ;;
   }
 
 
   dimension: payer_cohort {
+    label: "payer cohort by joined date"
     case: {
       when: {
         sql: ${days} is null ;;
