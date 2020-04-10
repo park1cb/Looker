@@ -2,7 +2,7 @@ view: payer_analysis {
   derived_table: {
     sql: select
         u.id as user_id
-        , cu.adjust_id as paid_user_adjust_id
+        , select case when device.platform='android' then device.adid when device.platform='ios' then coalesce(device.idfv,device.adid) end as device_id
         , cu.user_id as paid_user_id
         , cu.story_id
         , cu.used_at as created_at
@@ -27,6 +27,9 @@ view: payer_analysis {
 
       left join mysql.gatsby.stories s
       on cu.story_id = s.id
+
+      join mysql.gatsby.user_devices device
+      on cu.adjust_id=device.adjust_id
 
       left join
       (
