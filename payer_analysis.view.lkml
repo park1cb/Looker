@@ -209,10 +209,10 @@ view: payer_analysis {
     sql: ${TABLE}."days" ;;
   }
 
-  dimension: installed_days {
+  dimension: attributed_days {
     label: "days by attributed date"
     type: number
-    sql: ${TABLE}."installed_days" ;;
+    sql: ${TABLE}.attributed_days ;;
   }
 
 
