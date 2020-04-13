@@ -2,15 +2,15 @@ view: payer_analysis {
   derived_table: {
     sql: select distinct
         u.id as user_id
-        , case when a.os_name='android' then device.adid when a.os_name='ios' then coalesce(device.idfv,device.adid) end as device_id
-        , a.os_name
+        --, case when a.os_name='android' then device.adid when a.os_name='ios' then coalesce(device.idfv,device.adid) end as device_id
+        --, a.os_name
         , cu.user_id as paid_user_id
         , cu.story_id
         , cu.episode_id
         , cu.used_at as created_at
         , cu.coin_type as sales_type
         , u.joined_at
-        , a.attributed_at
+        --, a.attributed_at
         , s.writer_id as writer_id
         , s.title
         , s.chapter_count
@@ -21,9 +21,9 @@ view: payer_analysis {
         , s.views
         , e.no as episode_no
         , cu.amount as coins
-        --, tscv.value as writer_payout
+        , tscv.value as writer_payout
         , date_diff('hour',u.joined_at,cu.used_at)/24 as days
-        , date_diff('hour',a.attributed_at,cu.used_at)/24 as attributed_days
+        --, date_diff('hour',a.attributed_at,cu.used_at)/24 as attributed_days
 
       from mysql.gatsby.users u
 
@@ -33,11 +33,11 @@ view: payer_analysis {
       left join mysql.gatsby.stories s
       on cu.story_id = s.id
 
-      join mysql.gatsby.user_devices device
-      on cu.adjust_id=device.adjust_id
+      --join mysql.gatsby.user_devices device
+      --on cu.adjust_id=device.adjust_id
 
-      join mart.mart.user_mapper_adjust a
-      on a.adid=device.adjust_id
+      --join mart.mart.user_mapper_adjust a
+      --on a.adid=device.adjust_id
 
       left join
       (
@@ -55,8 +55,8 @@ view: payer_analysis {
 
 
 
-      --left join mysql.gatsby.transfer_story_coin_values tscv
-      --on tscv.story_id=s.id
+      left join mysql.gatsby.transfer_story_coin_values tscv
+      on tscv.story_id=s.id
 
 
 
@@ -65,15 +65,15 @@ view: payer_analysis {
 
   suggestions: no
 
-  dimension: os_name {
-    type: string
-    sql: ${TABLE}.os_name ;;
-  }
+  #dimension: os_name {
+  #  type: string
+  #  sql: ${TABLE}.os_name ;;
+  #}
 
-  dimension: device_id {
-    type: string
-    sql: ${TABLE}.device_id ;;
-  }
+  #dimension: device_id {
+  #  type: string
+  #  sql: ${TABLE}.device_id ;;
+  #}
 
   dimension: user_id {
     type: number
@@ -138,21 +138,21 @@ view: payer_analysis {
     sql: ${TABLE}.joined_at ;;
   }
 
-  dimension_group: attributed_at {
-    type: time
-    timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    convert_tz: yes
-    datatype: date
-    sql: ${TABLE}.attributed_at ;;
-  }
+  #dimension_group: attributed_at {
+  #  type: time
+  #  timeframes: [
+  #    raw,
+  #    time,
+  #    date,
+  #    week,
+  #    month,
+  #    quarter,
+  #    year
+  #  ]
+  #  convert_tz: yes
+  #  datatype: date
+  #  sql: ${TABLE}.attributed_at ;;
+  #}
 
   dimension: writer_id {
     type: number
@@ -214,11 +214,11 @@ view: payer_analysis {
     sql: ${TABLE}."days" ;;
   }
 
-  dimension: attributed_days {
-    label: "days by attributed date"
-    type: number
-    sql: ${TABLE}.attributed_days ;;
-  }
+  #dimension: attributed_days {
+  #  label: "days by attributed date"
+  #  type: number
+  #  sql: ${TABLE}.attributed_days ;;
+  #}
 
 
   dimension: payer_cohort {
@@ -332,10 +332,10 @@ view: payer_analysis {
     value_format_name: usd
   }
 
-  #measure: paying_transactions {
-  #  type: sum
-  #  sql: case when ${paid_user_id} is not null then 1 else 0 end ;;
-  #}
+  measure: paying_transactions {
+    type: sum
+    sql: case when ${paid_user_id} is not null then 1 else 0 end ;;
+  }
 
   measure: total_coins {
     type: sum
