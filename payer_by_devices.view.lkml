@@ -4,13 +4,15 @@ view: payer_by_devices {
       select
       a.installed_at
       ,a.attributed_at
+      ,a.os_name
+      ,a.network_name
       ,a.adid
       ,b.adjust_id
       ,b.product_type
       ,b.price
       ,b.purchased_at
       ,date_diff('hour',a.installed_at,b.purchased_at)/24 as installed_to_purchased
-      ,date_diff('hour',a.attributed_at,b.purchased_at)/24 as installed_to_attributed
+      ,date_diff('hour',a.attributed_at,b.purchased_at)/24 as attributed_to_purchased
       from mart.mart.user_mapper_adjust a
       left join mart.mart.coin_purchased_devices b
       on a.adid=b.adjust_id
@@ -53,6 +55,16 @@ view: payer_by_devices {
     convert_tz: no
     datatype: date
     sql: ${TABLE}.attributed_at ;;
+  }
+
+  dimension: os_name {
+    type: string
+    sql: ${TABLE}.os_name ;;
+  }
+
+  dimension: network_name {
+    type: string
+    sql: ${TABLE}.network_name ;;
   }
 
   dimension: adid {
@@ -102,14 +114,19 @@ view: payer_by_devices {
     sql: ${TABLE}.attributed_to_purchased ;;
   }
 
-  measure: install_count {
+  measure: installed_device_count {
     type: count_distinct
     sql: ${adid} ;;
   }
 
-  measure: purchased_devices{
+  measure: purchased_device_count{
     type: count_distinct
     sql: ${adjust_id} ;;
+  }
+
+  measure: revenue {
+    type: sum
+    sql: ${price} ;;
   }
 
 
