@@ -10,12 +10,25 @@ view: user_story_retention {
 
       select *
       from mast
-      where min_episode=1
+      --where min_episode=1
        ;;
   }
 
   suggestions: no
 
+  dimension_group: joined_at_est {
+    type: time
+    timeframes: [
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    convert_tz: no
+    datatype: date
+    sql: ${TABLE}.joined_at_est ;;
+  }
 
   dimension_group: base_date_est {
     type: time
