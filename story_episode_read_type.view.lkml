@@ -4,6 +4,7 @@ view: story_episode_read_type {
       ,case when c.type in ('one-time','subscription') then 'paid' when c.type is not null and c.type not in ('one-time','subscription') then 'free coin' else 'wait to unlock' end as story_read_type
       ,c.type
       ,date_diff('hour',previous_episode_read_dt,episode_read_dt) as hour--,b.created_at as episode_paid_at
+      ,d.joined_at
       from ${user_episode_read_dt_raw_data.SQL_TABLE_NAME} a
 
       left join mysql.gatsby.coin_usages b
@@ -13,6 +14,9 @@ view: story_episode_read_type {
 
       left join mysql.gatsby.coin_balances c
       on c.id = b.coin_balance_id
+
+      join mysql.gatsby.users d
+      on d.id=a.user_id
 
        ;;
   }
@@ -49,6 +53,21 @@ view: story_episode_read_type {
     convert_tz: yes
     datatype: date
     sql: ${TABLE}.episode_read_dt ;;
+  }
+
+  dimension_group: joined_at {
+    type: time
+    timeframes: [
+      raw,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    convert_tz: yes
+    datatype: date
+    sql: ${TABLE}.joined_at ;;
   }
 
   dimension: episode_number {
@@ -116,6 +135,12 @@ view: story_episode_read_type {
       icon_url: "https://res-3.cloudinary.com/crunchbase-production/image/upload/c_lpad,h_120,w_120,f_auto,b_white,q_auto:eco/v1485884030/mi3tj8fkktvfiio8rzyu.png"
     }
     sql: ${user_id} ;;
+  }
+
+  measure: story_revenue {
+    type: sum
+    sql: case when ${user_id} is null then 0 else 1 end *0.126 ;;
+    value_format_name: usd
   }
 
 
