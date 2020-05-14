@@ -248,3 +248,11 @@ explore: arppu_investor_request_temporary {}
 explore: payer_by_devices {}
 
 explore: coin_used_devises {}
+
+explore: multi_story_reader_dashboard {
+  join: new_users{
+    type: full_outer
+    relationship: one_to_one
+    sql_on: ${multi_story_reader_dashboard.user_id}=${new_users.id} ;;
+  }
+}
