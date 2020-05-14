@@ -169,7 +169,7 @@ view: multi_story_reader_dashboard2 {
     case: {
       when: {
         sql: ${D0_story_read} >= 4;;
-        label: "4+ Story"
+        label: "4+ Stories"
       }
       when: {
         sql: ${D0_story_read} = 3;;
@@ -181,7 +181,7 @@ view: multi_story_reader_dashboard2 {
       }
       when: {
         sql: ${D0_story_read} = 1;;
-        label: "1 Stories"
+        label: "1 Story"
       }
       else: "0 Story"
     }
@@ -191,7 +191,7 @@ view: multi_story_reader_dashboard2 {
     case: {
       when: {
         sql: ${D3_story_read} >= 4;;
-        label: "4+ Story"
+        label: "4+ Stories"
       }
       when: {
         sql: ${D3_story_read} = 3;;
@@ -203,7 +203,7 @@ view: multi_story_reader_dashboard2 {
       }
       when: {
         sql: ${D3_story_read} = 1;;
-        label: "1 Stories"
+        label: "1 Story"
       }
       else: "0 Story"
     }
@@ -213,7 +213,7 @@ view: multi_story_reader_dashboard2 {
     case: {
       when: {
         sql: ${D7_story_read} >= 4;;
-        label: "4+ Story"
+        label: "4+ Stories"
       }
       when: {
         sql: ${D7_story_read} = 3;;
@@ -225,7 +225,7 @@ view: multi_story_reader_dashboard2 {
       }
       when: {
         sql: ${D7_story_read} = 1;;
-        label: "1 Stories"
+        label: "1 Story"
       }
       else: "0 Story"
     }
@@ -235,7 +235,7 @@ view: multi_story_reader_dashboard2 {
     case: {
       when: {
         sql: ${D15_story_read} >= 4;;
-        label: "4+ Story"
+        label: "4+ Stories"
       }
       when: {
         sql: ${D15_story_read} = 3;;
@@ -247,7 +247,7 @@ view: multi_story_reader_dashboard2 {
       }
       when: {
         sql: ${D15_story_read} = 1;;
-        label: "1 Stories"
+        label: "1 Story"
       }
       else: "0 Story"
     }
@@ -257,7 +257,7 @@ view: multi_story_reader_dashboard2 {
     case: {
       when: {
         sql: ${D30_story_read} >= 4;;
-        label: "4+ Story"
+        label: "4+ Stories"
       }
       when: {
         sql: ${D30_story_read} = 3;;
@@ -269,7 +269,7 @@ view: multi_story_reader_dashboard2 {
       }
       when: {
         sql: ${D30_story_read} = 1;;
-        label: "1 Stories"
+        label: "1 Story"
       }
       else: "0 Story"
     }
