@@ -8,9 +8,9 @@ view: user_story_retention_raw_data {
       join mysql.gatsby.users u
       on u.id=bookmark.user_id
 
-      where bookmark.base_date>=date_add('month',-6,now())
+      where bookmark.base_date>=date_add('month',-2,now())
        ;;
-    sql_trigger_value: select date_trunc('hour',now());;
+    sql_trigger_value: select date_trunc('day',now());;
   }
 
   suggestions: no
