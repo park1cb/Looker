@@ -36,8 +36,6 @@ view: acquired_contents_performance {
 
   parameter: acquired_date {
     type: date
-    #suggest_explore: dw_amplitude
-    #suggest_dimension: dw_amplitude.event_type
   }
 
   parameter: story_id {
